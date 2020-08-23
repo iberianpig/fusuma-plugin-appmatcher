@@ -7,17 +7,23 @@ module Fusuma
     module Inputs
       # Get active application's name
       class ApplicationMatcherInput < Input
-        def run
-          @check_time ||= Time.now
-          return unless @check_time < Time.now
+        def io
+          @bamf ||= Fusuma::Plugin::ApplicationMatcher::Bamf.new
 
-          @check_time = Time.now + 0.5
-          event(record: application_name)
-        end
+          @pid ||= begin
+                     # NOTE: push current application to pipe before start
+                     @bamf.io_write(@bamf.active_application_name)
 
-        def application_name
-          @bamf ||= Bamf.new
-          @bamf.active_application_name || 'NOT_FOUND'
+                     @bamf.on_active_application_changed
+                     pid = @bamf.watch_start
+
+                     # NOTE: Closing the parent process's pipe
+                     @bamf.writer.close
+
+                     pid
+                   end
+
+          @bamf.reader
         end
       end
     end

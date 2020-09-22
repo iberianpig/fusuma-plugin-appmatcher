@@ -20,9 +20,8 @@ end
 opt.parse!(ARGV)
 
 if option[:list]
-  bamf = Fusuma::Plugin::ApplicationMatcher::Bamf.new
-  application_names = bamf.fetch_applications.map { |app| bamf.find_name(app[:desktop_file]) }
-  puts application_names
+  matcher = Fusuma::Plugin::ApplicationMatcher::Bamf::Matcher.new(DBus.session_bus)
+  puts matcher.running_applications.map(&:name)
   return
 end
 
@@ -31,5 +30,5 @@ if option[:version]
   return
 end
 
-bamf = Fusuma::Plugin::ApplicationMatcher::Bamf.new
-puts bamf.active_application_name
+matcher = Fusuma::Plugin::ApplicationMatcher::Bamf::Matcher.new(DBus.session_bus)
+puts matcher.active_application.name

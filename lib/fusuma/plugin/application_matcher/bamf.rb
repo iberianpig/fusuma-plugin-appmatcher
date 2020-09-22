@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'dbus'
-require 'inifile'
+require 'iniparse'
+require_relative './user_switcher.rb'
 
 module Fusuma
   module Plugin
@@ -12,9 +13,6 @@ module Fusuma
         attr_reader :reader
         attr_reader :writer
         def initialize
-          @session_bus = DBus.session_bus
-          service = @session_bus.service('org.ayatana.bamf')
-          @matcher = service['/org/ayatana/bamf/matcher']['org.ayatana.bamf.matcher']
           @reader, @writer = IO.pipe
         end
 
@@ -101,59 +99,103 @@ module Fusuma
         #     </signal>
         #   </interface>
         # </node>
-
-        def fetch_applications
-          @matcher.RunningApplicationsDesktopFiles.map do |file|
-            {
-              desktop_file: file,
-              application_id: @matcher.PathForApplication(file)
-            }
+        class Matcher
+          def initialize(session_bus)
+            service = session_bus.service('org.ayatana.bamf')
+            @interface = service['/org/ayatana/bamf/matcher']['org.ayatana.bamf.matcher']
           end
-        end
 
-        def active_application_name
-          app = active_application
-          return if app.nil?
-
-          desktop_file = app[:desktop_file]
-          find_name(desktop_file)
-        end
-
-        def active_application(active_application_id = fetch_active_application_id)
-          @activated ||= []
-          @activated.find { |app| app[:application_id] == active_application_id } ||
-            fetch_applications.find { |app| app[:application_id] == active_application_id }.tap do |active|
-              @activated << active
-              @activated.compact!
+          # @return [Array<Application>]
+          def running_applications
+            @interface.RunningApplicationsDesktopFiles.map do |desktop_file|
+              Application.new(
+                desktop_file: desktop_file,
+                id: @interface.PathForApplication(desktop_file)
+              )
             end
-        end
+          end
 
-        def fetch_active_application_id
-          @matcher.ActiveApplication
+          # @return [Application]
+          def active_application(id = active_application_id)
+            @cached ||= []
+
+            @cached.find do |app|
+              app.id == id
+            end || running_applications.find do |app|
+              # cache applications
+              @cached << app
+              @cached.compact!
+
+              app.id == id
+            end
+          end
+
+          def active_application_id
+            @interface.ActiveApplication
+          end
+
+          def on_active_application_changed
+            @interface.on_signal('ActiveApplicationChanged') do |_old, new_id|
+              # if app is is not found, fetch active_application_id
+              application = active_application(new_id) || active_application
+              yield(application.name || 'NOT FOUND') if block_given?
+            end
+          end
+
+          # identify Application
+          class Application
+            attr_reader :desktop_file, :id
+
+            def initialize(desktop_file:, id:)
+              @desktop_file = desktop_file
+              @id = id
+            end
+
+            def name
+              self.class.find_name(desktop_file)
+            end
+
+            def self.find_name(desktop_file)
+              @names ||= {}
+
+              @names[desktop_file] ||= begin
+                                         ini = IniParse.parse(File.read(desktop_file))
+                                         ini['Desktop Entry']['Name']
+                                       end
+            end
+          end
         end
 
         # fork process and watch signal
         # @return [Integer] Process id
         def watch_start
           @watch_start ||= begin
-                     pid = fork do
+                     pid = UserSwitcher.new.as_user do |user|
                        @reader.close
-                       loop = DBus::Main.new
-                       loop << @session_bus
-                       loop.run
+                       ENV['DBUS_SESSION_BUS_ADDRESS'] = "unix:path=/run/user/#{user.uid}/bus"
+                       session_bus = DBus.session_bus
+
+                       register_on_application_changed(Matcher.new(session_bus))
+                       execute_loop(session_bus)
                      end
                      Process.detach(pid)
                      pid
                    end
         end
 
-        def on_active_application_changed
-          @matcher.on_signal('ActiveApplicationChanged') do |_old, new_id|
-            application = active_application(new_id)
-            next if application.nil?
+        def execute_loop(session_bus)
+          loop = DBus::Main.new
+          loop << session_bus
+          loop.run
+        end
 
+        def register_on_application_changed(matcher)
+          # NOTE: push current application to pipe before start
+          @writer.puts(matcher.active_application.name)
+
+          matcher.on_active_application_changed do |name|
             begin
-              io_write(find_name(application[:desktop_file]))
+              @writer.puts(name)
             rescue Errno::EPIPE
               exit 0
             rescue StandardError => e
@@ -161,19 +203,6 @@ module Fusuma
               exit 1
             end
           end
-        end
-
-        def io_write(content)
-          @writer.puts(content)
-        end
-
-        def find_name(desktop_file)
-          @names ||= {}
-
-          @names[desktop_file] ||= begin
-                                     ini = IniFile.load(desktop_file)
-                                     ini['Desktop Entry']['Name']
-                                   end
         end
       end
     end

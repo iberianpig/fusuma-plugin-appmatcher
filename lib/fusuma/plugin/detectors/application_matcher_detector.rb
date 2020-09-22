@@ -7,7 +7,7 @@ module Fusuma
       class ApplicationMatcherDetector < Detector
         BUFFER_TYPE = 'application_matcher'
 
-        DEFAULT_NAME = 'default'
+        DEFAULT_NAME = 'global'
 
         # @param buffers [Array<Event>]
         # @return [Event] if event is detected
@@ -32,24 +32,10 @@ module Fusuma
         def create_index(record:)
           Config::Index.new(
             [
-              Config::Index::Key.new('application', skippable: true),
-              Config::Index::Key.new(application_name(record), skippable: true)
+              Config::Index::Key.new('application'),
+              Config::Index::Key.new(record.name, fallback: DEFAULT_NAME)
             ]
           )
-        end
-
-        private
-
-        def application_name(record)
-          @names ||= {}
-
-          @names[record.name] ||= begin
-                                    if Config.search(Config::Index.new([:application, record.name]))
-                                      record.name
-                                    else
-                                      DEFAULT_NAME
-                                    end
-                                  end
         end
       end
     end

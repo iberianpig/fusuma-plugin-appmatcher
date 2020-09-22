@@ -1,34 +1,89 @@
-# Fusuma::Plugin::ApplicationMatcher
+# Fusuma::Plugin::ApplicationMatcher [![Gem Version](https://badge.fury.io/rb/fusuma-plugin-application_matcher.svg)](https://badge.fury.io/rb/fusuma-plugin-application_matcher) [![Build Status](https://travis-ci.com/iberianpig/fusuma-plugin-application_matcher.svg?branch=master)](https://travis-ci.com/iberianpig/fusuma-plugin-application_matcher)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fusuma/plugin/application_matcher`. To experiment with that code, run `bin/console` for an interactive prompt.
+[Fusuma](https://github.com/iberianpig/fusuma) plugin configure per application
 
-TODO: Delete this and the text above, and describe your gem
+* Switch settings by detecting active window.
+
+**NOTE: Currently, fusuma-plugin-applicaion_matcher is available Only X11**
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Run the following code in your terminal.
 
-```ruby
-gem 'fusuma-plugin-application_matcher'
+### Install dependencies
+
+```sh
+$ sudo apt-get install bamfdaemon
 ```
 
-And then execute:
+### Install fusuma-plugin-application_matcher
 
-    $ bundle
+```sh
+$ sudo gem install fusuma-plugin-application_matcher
+```
 
-Or install it yourself as:
 
-    $ gem install fusuma-plugin-application_matcher
+## List Running Application names
 
-## Usage
+`$ fusuma-application_matcher -l` prints Running Application names.
 
-TODO: Write usage instructions here
+```sh
+$ fusuma-application_matcher -l
+Google Chrome
+Terminal
+Wingpanel
+Plank
+```
 
-## Development
+## Add application_matcher properties and application names to config.yml
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Add `application_matcher:` property in `~/.config/fusuma/config.yml`.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+lines beginning from `#` are comments
+
+### Add `application:` property
+
+* Set the `application:` property in the root of config.yml.
+
+* The `application:` property should be set to `ApplicationName:` underneath the `application:` property.
+    * If set `global:` as the `ApplicationName`, it is used when the application is not found.
+
+* Move the `swipe` and `pinch` settings under `ApplicationName:`.
+
+
+### Example
+
+```diff
+- swipe:
+-   3:
+-     left:
+-       sendkey: "LEFTALT+RIGHT" # history back
+-     right:
+-       sendkey: "LEFTALT+LEFT" # history forward
+-     up:
+-       sendkey: "LEFTCTRL+T" # open new tab
+-     down:
+-       sendkey: "LEFTCTRL+W" # close tab
++ application:
++   Global:
++     swipe:
++       3:
++         left:
++           sendkey: "LEFTALT+RIGHT" # history back
++         right:
++           sendkey: "LEFTALT+LEFT" # history forward
++         up:
++           sendkey: "LEFTCTRL+T" # open new tab
++         down:
++           sendkey: "LEFTCTRL+W" # close tab
++   Terminal:
++     swipe:
++       3: 
++         up:
++           window: {fullscreen: 'add'}
++         down:
++           window: {fullscreen: 'remove'}
+```
 
 ## Contributing
 

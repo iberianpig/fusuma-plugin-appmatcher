@@ -138,7 +138,7 @@ module Fusuma
             @interface.on_signal('ActiveApplicationChanged') do |_old, new_id|
               # if app is is not found, fetch active_application_id
               application = active_application(new_id) || active_application
-              yield(application.name || 'NOT FOUND') if block_given?
+              yield(application&.name || 'NOT FOUND') if block_given?
             end
           end
 
@@ -191,7 +191,7 @@ module Fusuma
 
         def register_on_application_changed(matcher)
           # NOTE: push current application to pipe before start
-          @writer.puts(matcher.active_application.name)
+          @writer.puts(matcher.active_application&.name)
 
           matcher.on_active_application_changed do |name|
             begin

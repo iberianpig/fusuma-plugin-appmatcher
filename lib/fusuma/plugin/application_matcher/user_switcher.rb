@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
+require 'etc'
 module Fusuma
   module Plugin
     module ApplicationMatcher
       class UserSwitcher
         User = Struct.new(:username, :uid, :gid)
         def initialize
-          username = `logname`.chomp
+          username = ENV['SUDO_USER'] || Etc.getlogin
           uid = `id -u #{username}`.chomp.to_i
           gid = `id -g #{username}`.chomp.to_i
           @login_user = User.new(username, uid, gid)

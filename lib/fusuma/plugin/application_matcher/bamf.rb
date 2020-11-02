@@ -16,6 +16,45 @@ module Fusuma
           @reader, @writer = IO.pipe
         end
 
+        # fork process and watch signal
+        # @return [Integer] Process id
+        def watch_start
+          @watch_start ||= begin
+                     pid = UserSwitcher.new.as_user do |user|
+                       @reader.close
+                       ENV['DBUS_SESSION_BUS_ADDRESS'] = "unix:path=/run/user/#{user.uid}/bus"
+                       session_bus = DBus.session_bus
+
+                       register_on_application_changed(Matcher.new(session_bus))
+                       execute_loop(session_bus)
+                     end
+                     Process.detach(pid)
+                     pid
+                   end
+        end
+
+        def execute_loop(session_bus)
+          loop = DBus::Main.new
+          loop << session_bus
+          loop.run
+        end
+
+        def register_on_application_changed(matcher)
+          # NOTE: push current application to pipe before start
+          @writer.puts(matcher.active_application&.name)
+
+          matcher.on_active_application_changed do |name|
+            begin
+              @writer.puts(name)
+            rescue Errno::EPIPE
+              exit 0
+            rescue StandardError => e
+              MultiLogger.error e.message
+              exit 1
+            end
+          end
+        end
+
         # interface.methods.keys
         # => ["XidsForApplication",
         #  "TabPaths",
@@ -167,45 +206,6 @@ module Fusuma
                                          ini = IniParse.parse(File.read(desktop_file))
                                          ini['Desktop Entry']['Name']
                                        end
-            end
-          end
-        end
-
-        # fork process and watch signal
-        # @return [Integer] Process id
-        def watch_start
-          @watch_start ||= begin
-                     pid = UserSwitcher.new.as_user do |user|
-                       @reader.close
-                       ENV['DBUS_SESSION_BUS_ADDRESS'] = "unix:path=/run/user/#{user.uid}/bus"
-                       session_bus = DBus.session_bus
-
-                       register_on_application_changed(Matcher.new(session_bus))
-                       execute_loop(session_bus)
-                     end
-                     Process.detach(pid)
-                     pid
-                   end
-        end
-
-        def execute_loop(session_bus)
-          loop = DBus::Main.new
-          loop << session_bus
-          loop.run
-        end
-
-        def register_on_application_changed(matcher)
-          # NOTE: push current application to pipe before start
-          @writer.puts(matcher.active_application&.name)
-
-          matcher.on_active_application_changed do |name|
-            begin
-              @writer.puts(name)
-            rescue Errno::EPIPE
-              exit 0
-            rescue StandardError => e
-              MultiLogger.error e.message
-              exit 1
             end
           end
         end

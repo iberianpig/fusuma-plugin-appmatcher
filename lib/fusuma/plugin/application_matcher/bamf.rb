@@ -103,6 +103,11 @@ module Fusuma
           def initialize(session_bus)
             service = session_bus.service('org.ayatana.bamf')
             @interface = service['/org/ayatana/bamf/matcher']['org.ayatana.bamf.matcher']
+          rescue DBus::Error => e
+            MultiLogger.error "DBus::Error: #{e.message}"
+            MultiLogger.error 'Have you installed bamfdaemon?'
+
+            exit 1
           end
 
           # @return [Array<Application>]

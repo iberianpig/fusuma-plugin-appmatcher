@@ -33,6 +33,8 @@ module Fusuma
                    end
         end
 
+        private
+
         def execute_loop(session_bus)
           loop = DBus::Main.new
           loop << session_bus
@@ -41,18 +43,20 @@ module Fusuma
 
         def register_on_application_changed(matcher)
           # NOTE: push current application to pipe before start
-          @writer.puts(matcher.active_application&.name)
+          notify(matcher.active_application&.name)
 
           matcher.on_active_application_changed do |name|
-            begin
-              @writer.puts(name)
-            rescue Errno::EPIPE
-              exit 0
-            rescue StandardError => e
-              MultiLogger.error e.message
-              exit 1
-            end
+            notify(name)
           end
+        end
+
+        def notify(name)
+          @writer.puts(name)
+        rescue Errno::EPIPE
+          exit 0
+        rescue StandardError => e
+          MultiLogger.error e.message
+          exit 1
         end
 
         # interface.methods.keys
@@ -202,10 +206,16 @@ module Fusuma
             def self.find_name(desktop_file)
               @names ||= {}
 
-              @names[desktop_file] ||= begin
-                                         ini = IniParse.parse(File.read(desktop_file))
-                                         ini['Desktop Entry']['Name']
-                                       end
+              @names[desktop_file] ||= find_wm_class(desktop_file) || basename(desktop_file)
+            end
+
+            def self.find_wm_class(desktop_file)
+              ini = IniParse.parse(File.read(desktop_file))
+              ini['Desktop Entry']['StartupWMClass']
+            end
+
+            def self.basename(desktop_file)
+              File.basename(desktop_file).chomp('.desktop')
             end
           end
         end

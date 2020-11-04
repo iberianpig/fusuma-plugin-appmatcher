@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require_relative '../lib/fusuma/plugin/application_matcher/bamf.rb'
+require_relative '../lib/fusuma/plugin/application_matcher/x11.rb'
 require_relative '../lib/fusuma/plugin/application_matcher/version.rb'
 
 option = {}
@@ -20,8 +20,8 @@ end
 opt.parse!(ARGV)
 
 if option[:list]
-  matcher = Fusuma::Plugin::ApplicationMatcher::Bamf::Matcher.new(DBus.session_bus)
-  puts matcher.running_applications.map(&:name)
+  matcher = Fusuma::Plugin::ApplicationMatcher::X11::Matcher.new
+  puts matcher.running_applications
   return
 end
 
@@ -30,5 +30,5 @@ if option[:version]
   return
 end
 
-matcher = Fusuma::Plugin::ApplicationMatcher::Bamf::Matcher.new(DBus.session_bus)
-puts matcher.active_application.name
+matcher = Fusuma::Plugin::ApplicationMatcher::X11::Matcher.new
+puts matcher.active_application

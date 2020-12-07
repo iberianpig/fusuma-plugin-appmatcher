@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'fusuma/plugin/application_matcher/version'
+require 'fusuma/plugin/appmatcher/version'
 
 module Fusuma
   module Plugin
-    module ApplicationMatcher
+    module Appmatcher
       class Error < StandardError; end
       # Your code goes here...
     end

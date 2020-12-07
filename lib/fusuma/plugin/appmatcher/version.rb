@@ -2,7 +2,7 @@
 
 module Fusuma
   module Plugin
-    module ApplicationMatcher
+    module Appmatcher
       VERSION = '0.1.0'
     end
   end

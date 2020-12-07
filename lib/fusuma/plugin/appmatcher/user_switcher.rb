@@ -3,7 +3,7 @@
 require 'etc'
 module Fusuma
   module Plugin
-    module ApplicationMatcher
+    module Appmatcher
       class UserSwitcher
         User = Struct.new(:username, :uid, :gid)
         def initialize

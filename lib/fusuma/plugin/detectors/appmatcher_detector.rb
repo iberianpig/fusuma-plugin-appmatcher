@@ -4,8 +4,8 @@ module Fusuma
   module Plugin
     module Detectors
       # Detect KeypressEvent from KeypressBuffer
-      class ApplicationMatcherDetector < Detector
-        BUFFER_TYPE = 'application_matcher'
+      class AppmatcherDetector < Detector
+        BUFFER_TYPE = 'appmatcher'
 
         DEFAULT_NAME = 'global'
 

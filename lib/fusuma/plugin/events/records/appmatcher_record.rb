@@ -5,7 +5,7 @@ module Fusuma
     module Events
       module Records
         # Record for Keypress event
-        class ApplicationMatcherRecord < Record
+        class AppmatcherRecord < Record
           attr_reader :name
 
           # @param status [String]

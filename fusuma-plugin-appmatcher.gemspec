@@ -2,17 +2,17 @@
 
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'fusuma/plugin/application_matcher/version'
+require 'fusuma/plugin/appmatcher/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'fusuma-plugin-application_matcher'
-  spec.version       = Fusuma::Plugin::ApplicationMatcher::VERSION
+  spec.name          = 'fusuma-plugin-appmatcher'
+  spec.version       = Fusuma::Plugin::Appmatcher::VERSION
   spec.authors       = ['iberianpig']
   spec.email         = ['yhkyky@gmail.com']
 
   spec.summary       = 'Write a short summary, because RubyGems requires one.'
   spec.description   = 'Write a longer description or delete this line.'
-  spec.homepage      = 'https://github.com/iberianpig/fusuma-plugin-application_matcher'
+  spec.homepage      = 'https://github.com/iberianpig/fusuma-plugin-appmatcher'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
     # spec.metadata["allowed_push_host"] = "TODO Set to 'http://mygemserver.com'"
 
     # spec.metadata["homepage_uri"] = spec.homepage
-    # spec.metadata["source_code_uri"] = "https://github.com/iberianpig/fusuma-plugin-application_matcher"
+    # spec.metadata["source_code_uri"] = "https://github.com/iberianpig/fusuma-plugin-appmatcher"
     # spec.metadata["changelog_uri"] = "TODO Put your gem's CHANGELOG.md URL here."
   else
     raise 'RubyGems 2.0 or newer is required to protect against ' \
@@ -40,5 +40,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'iniparse'
   spec.add_runtime_dependency 'ruby-dbus'
 
-  spec.add_dependency 'fusuma', '~> 2.0'
+  spec.add_dependency 'fusuma', '~> 2.0.0.pre'
 end

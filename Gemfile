@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in fusuma-plugin-application_matcher.gemspec
+# Specify your gem's dependencies in fusuma-plugin-appmatcher.gemspec
 gemspec
 
 gem 'bundler', '~> 2.0'

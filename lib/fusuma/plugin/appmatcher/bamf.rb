@@ -6,7 +6,7 @@ require_relative './user_switcher.rb'
 
 module Fusuma
   module Plugin
-    module ApplicationMatcher
+    module Appmatcher
       # Search Active Window's Name
       class Bamf
         attr_reader :matcher

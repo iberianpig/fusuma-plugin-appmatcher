@@ -2,8 +2,8 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require_relative '../lib/fusuma/plugin/application_matcher/x11.rb'
-require_relative '../lib/fusuma/plugin/application_matcher/version.rb'
+require_relative '../lib/fusuma/plugin/appmatcher/x11.rb'
+require_relative '../lib/fusuma/plugin/appmatcher/version.rb'
 
 option = {}
 opt = OptionParser.new
@@ -20,15 +20,15 @@ end
 opt.parse!(ARGV)
 
 if option[:list]
-  matcher = Fusuma::Plugin::ApplicationMatcher::X11::Matcher.new
+  matcher = Fusuma::Plugin::Appmatcher::X11::Matcher.new
   puts matcher.running_applications
   return
 end
 
 if option[:version]
-  puts Fusuma::Plugin::ApplicationMatcher::VERSION
+  puts Fusuma::Plugin::Appmatcher::VERSION
   return
 end
 
-matcher = Fusuma::Plugin::ApplicationMatcher::X11::Matcher.new
+matcher = Fusuma::Plugin::Appmatcher::X11::Matcher.new
 puts matcher.active_application

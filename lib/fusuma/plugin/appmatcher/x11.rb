@@ -5,7 +5,7 @@ require 'posix/spawn'
 
 module Fusuma
   module Plugin
-    module ApplicationMatcher
+    module Appmatcher
       # Search Active Window's Name
       class X11
         attr_reader :matcher
@@ -45,6 +45,7 @@ module Fusuma
           exit 1
         end
 
+        # Search application name using xprop
         class Matcher
           # @return [Array<String>]
           def running_applications
@@ -64,25 +65,31 @@ module Fusuma
                            end
           end
 
-          def active_window_id(watch: false)
-            spy = '-spy' if watch
-            command = "xprop #{spy} -root _NET_ACTIVE_WINDOW"
-            p, i, o, _e = POSIX::Spawn.popen4(command)
-            i.close
-            o.each do |line|
-              id = line.match(/0x[\da-z]{2,}/)&.to_s
-              if block_given?
-                yield(id)
-              else
-                return id
-              end
-            end
-          end
-
           def on_active_application_changed
             active_window_id(watch: true) do |id|
               yield(active_application(id) || 'NOT FOUND')
             end
+          end
+
+          private
+
+          def active_window_id(watch: false)
+            _p, i, o, _e = POSIX::Spawn.popen4(xprop_active_window_id(watch))
+            i.close
+            o.each do |line|
+              id = line.match(/0x[\da-z]{2,}/)&.to_s
+
+              return id unless block_given?
+
+              yield(id)
+            end
+          end
+
+          # @param spy [TrueClass, FalseClass]
+          # @return [String]
+          def xprop_active_window_id(spy)
+            spy_option = '-spy' if spy
+            "xprop #{spy_option} -root _NET_ACTIVE_WINDOW"
           end
         end
       end

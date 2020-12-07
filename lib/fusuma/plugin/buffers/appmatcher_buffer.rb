@@ -4,8 +4,8 @@ module Fusuma
   module Plugin
     module Buffers
       # Buffer events having KeypressRecord
-      class ApplicationMatcherBuffer < Buffer
-        DEFAULT_SOURCE = 'application_matcher_parser'
+      class AppmatcherBuffer < Buffer
+        DEFAULT_SOURCE = 'appmatcher_parser'
 
         # @param event [Event]
         def buffer(event)

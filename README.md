@@ -10,18 +10,11 @@
 
 Run the following code in your terminal.
 
-### Install dependencies
-
-```sh
-$ sudo apt-get install bamfdaemon
-```
-
 ### Install fusuma-plugin-appmatcher
 
 ```sh
 $ sudo gem install fusuma-plugin-appmatcher
 ```
-
 
 ## List Running Application names
 
@@ -45,38 +38,52 @@ lines beginning from `#` are comments
 
 * Set the `application:` property in the root of config.yml.
 
-* The `application:` property should be set to `ApplicationName:` underneath the `application:` property.
-    * If set `global:` as the `ApplicationName`, it is used when the application is not found.
-
-* Move the `swipe` and `pinch` settings under `ApplicationName:`.
-
+* Under the `application:` property, you can set the `application name` as a property.
+  * For example, you can set `:Google-chrome`, `:Alacritty`, `Org.gnome.Nautilus`, and so on.
+    * You can find property name's hint, with `$ fusuma-appmatcher -l`
+  * If set `global:` as the `application name`, it is used as default configuration.
 
 ### Example
 
+* Move the existing `swipe` or `pinch` sections in config.yml under `application:` > `Global:`.
+
 ```diff
 - swipe:
--   3:
--     left:
--       sendkey: "LEFTALT+RIGHT" # history back
--     right:
--       sendkey: "LEFTALT+LEFT" # history forward
+-   4:
 -     up:
--       sendkey: "LEFTCTRL+T" # open new tab
+-       sendkey: 'LEFTCTRL+LEFTALT+DOWN'
+-       keypress:
+-         LEFTSHIFT:
+-           sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+DOWN'
 -     down:
--       sendkey: "LEFTCTRL+W" # close tab
+-       sendkey: 'LEFTCTRL+LEFTALT+UP'
+-       LEFTSHIFT:
+-         sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+UP'
 + application:
 +   Global:
 +     swipe:
++       4:
++         up:
++           sendkey: 'LEFTCTRL+LEFTALT+DOWN'
++           keypress:
++             LEFTSHIFT:
++               sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+DOWN'
++         down:
++           sendkey: 'LEFTCTRL+LEFTALT+UP'
++           LEFTSHIFT:
++             sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+UP'
++   Google-chrome:
++     swipe:
 +       3:
 +         left:
-+           sendkey: "LEFTALT+RIGHT" # history back
++           sendkey: 'LEFTALT+RIGHT'
 +         right:
-+           sendkey: "LEFTALT+LEFT" # history forward
++           sendkey: 'LEFTALT+LEFT'
 +         up:
-+           sendkey: "LEFTCTRL+T" # open new tab
++           sendkey: 'LEFTCTRL+T'
 +         down:
-+           sendkey: "LEFTCTRL+W" # close tab
-+   Terminal:
++           sendkey: 'LEFTCTRL+W'
++   Alacritty:
 +     swipe:
 +       3: 
 +         up:
@@ -84,6 +91,10 @@ lines beginning from `#` are comments
 +         down:
 +           window: {fullscreen: 'remove'}
 ```
+
+### TODO
+
+* [ ] Enable Threshold / Interval Settings
 
 ## Contributing
 

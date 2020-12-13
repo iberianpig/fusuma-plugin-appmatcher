@@ -45,7 +45,7 @@ module Fusuma
           exit 1
         end
 
-        # Search application name using xprop
+        # Look up  application name using xprop
         class Matcher
           # @return [Array<String>]
           def running_applications

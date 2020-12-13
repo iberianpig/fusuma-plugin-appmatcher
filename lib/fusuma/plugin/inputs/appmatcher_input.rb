@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../appmatcher/x11.rb'
+require_relative '../appmatcher.rb'
 
 module Fusuma
   module Plugin
@@ -8,7 +8,7 @@ module Fusuma
       # Get active application's name
       class AppmatcherInput < Input
         def io
-          @backend ||= Fusuma::Plugin::Appmatcher::X11.new
+          @backend ||= Appmatcher.backend_klass.new
 
           @pid ||= begin
                      pid = @backend.watch_start

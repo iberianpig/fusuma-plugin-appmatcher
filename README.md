@@ -2,9 +2,9 @@
 
 [Fusuma](https://github.com/iberianpig/fusuma) plugin configure per application
 
-* Switch settings by detecting active window.
+* Switch gesture mappings by detecting active application.
+* Support X11, Ubuntu-Wayland
 
-**NOTE: Currently, fusuma-plugin-applicaion_matcher is available Only X11**
 
 ## Installation
 
@@ -22,11 +22,12 @@ $ sudo gem install fusuma-plugin-appmatcher
 
 ```sh
 $ fusuma-appmatcher -l
-Google Chrome
-Terminal
-Wingpanel
-Plank
+Slack
+Google-chrome
+Alacritty
 ```
+
+You can use these applicatin name to under `application:` section in config.yml
 
 ## Add appmatcher properties and application names to config.yml
 
@@ -94,7 +95,7 @@ lines beginning from `#` are comments
 
 ### TODO
 
-* [ ] Enable Threshold / Interval Settings
+* [ ] Support Threshold / Interval Settings
 
 ## Contributing
 

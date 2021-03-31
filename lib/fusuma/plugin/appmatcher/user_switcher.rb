@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
+require 'fusuma/custom_process'
 require 'etc'
+
 module Fusuma
   module Plugin
     module Appmatcher
       class UserSwitcher
+        include CustomProcess
         User = Struct.new(:username, :uid, :gid)
         def initialize
           username = ENV['SUDO_USER'] || Etc.getlogin

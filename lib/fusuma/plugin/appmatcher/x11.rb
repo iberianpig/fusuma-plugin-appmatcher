@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require_relative './user_switcher.rb'
+require_relative './user_switcher'
+require 'fusuma/multi_logger'
+require 'fusuma/custom_process'
 require 'posix/spawn'
 
 module Fusuma
@@ -8,9 +10,8 @@ module Fusuma
     module Appmatcher
       # Search Active Window's Name
       class X11
-        attr_reader :matcher
-        attr_reader :reader
-        attr_reader :writer
+        attr_reader :matcher, :reader, :writer
+
         def initialize
           @reader, @writer = IO.pipe
         end
@@ -19,13 +20,13 @@ module Fusuma
         # @return [Integer] Process id
         def watch_start
           @watch_start ||= begin
-                     pid = UserSwitcher.new.as_user do |_user|
-                       @reader.close
-                       register_on_application_changed(Matcher.new)
-                     end
-                     Process.detach(pid)
-                     pid
-                   end
+            pid = UserSwitcher.new.as_user do |_user|
+              @reader.close
+              register_on_application_changed(Matcher.new)
+            end
+            Process.detach(pid)
+            pid
+          end
         end
 
         private
@@ -59,10 +60,10 @@ module Fusuma
           def active_application(id = active_window_id)
             @cache ||= {}
             @cache[id] ||= begin
-                             return if id.nil?
+              return if id.nil?
 
-                             `xprop -id #{id} WM_CLASS | cut -d "=" -f 2 | tr -d '"'`.strip.split(', ').last
-                           end
+              `xprop -id #{id} WM_CLASS | cut -d "=" -f 2 | tr -d '"'`.strip.split(', ').last
+            end
           end
 
           def on_active_application_changed
@@ -73,8 +74,8 @@ module Fusuma
 
           private
 
-          def active_window_id(watch: false)
-            _p, i, o, _e = POSIX::Spawn.popen4(xprop_active_window_id(watch))
+          def active_window_id(watch: false, &block)
+            _p, i, o, e = POSIX::Spawn.popen4(xprop_active_window_id(watch))
             i.close
             o.each do |line|
               id = line.match(/0x[\da-z]{2,}/)&.to_s
@@ -83,6 +84,15 @@ module Fusuma
 
               yield(id)
             end
+            MultiLogger.error e.read if o.eof?
+            e.close
+            o.close
+
+            return nil unless block_given?
+            sleep 1
+            active_window_id(watch: watch, &block)
+          rescue StandardError => e
+            MultiLogger.error e.message
           end
 
           # @param spy [TrueClass, FalseClass]

@@ -2,7 +2,7 @@
 
 require 'json'
 require 'dbus'
-require_relative './user_switcher.rb'
+require_relative './user_switcher'
 require 'posix/spawn'
 
 module Fusuma
@@ -10,9 +10,8 @@ module Fusuma
     module Appmatcher
       # Search Active Window's Name
       class Gnome
-        attr_reader :matcher
-        attr_reader :reader
-        attr_reader :writer
+        attr_reader :matcher, :reader, :writer
+
         def initialize
           @reader, @writer = IO.pipe
         end
@@ -21,14 +20,14 @@ module Fusuma
         # @return [Integer] Process id
         def watch_start
           @watch_start ||= begin
-                     pid = UserSwitcher.new.as_user do |user|
-                       @reader.close
-                       ENV['DBUS_SESSION_BUS_ADDRESS'] = "unix:path=/run/user/#{user.uid}/bus"
-                       register_on_application_changed(Matcher.new)
-                     end
-                     Process.detach(pid)
-                     pid
-                   end
+            pid = UserSwitcher.new.as_user do |user|
+              @reader.close
+              ENV['DBUS_SESSION_BUS_ADDRESS'] = "unix:path=/run/user/#{user.uid}/bus"
+              register_on_application_changed(Matcher.new)
+            end
+            Process.detach(pid)
+            pid
+          end
         end
 
         private
@@ -81,15 +80,31 @@ module Fusuma
             )
           end
 
+          # TODO
+          # def window_title
+          # # const index = global.get_window_actors()
+          # #                   .findIndex(a=>a.meta_window.has_focus()===true);
+          # # global.get_window_actors()[index].get_meta_window().get_title();
+          #   gnome_shell_eval(
+          #     # <<~GJS
+          #     #   global.get_window_actors().map((current) => {
+          #     #     const wm_class = current.get_meta_window().get_wm_class();
+          #     #     const title = current.get_meta_window().get_title();
+          #     #     return { application: wm_class, window_title: title }
+          #     #   })
+          #     # GJS
+          #   )
+          # end
+
           def gnome_shell_eval(string)
             success, body = @interface.Eval(string)
 
             if success
               response = begin
-                           JSON.parse(body)
-                         rescue StandardError
-                           nil
-                         end
+                JSON.parse(body)
+              rescue StandardError
+                nil
+              end
               return response
             end
 

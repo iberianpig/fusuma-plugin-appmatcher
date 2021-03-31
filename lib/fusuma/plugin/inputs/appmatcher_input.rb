@@ -7,6 +7,8 @@ module Fusuma
     module Inputs
       # Get active application's name
       class AppmatcherInput < Input
+        attr_reader :pid
+
         def io
           @backend ||= Appmatcher.backend_klass.new
 

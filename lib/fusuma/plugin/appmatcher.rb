@@ -2,8 +2,8 @@
 
 require 'fusuma/plugin/appmatcher/version'
 
-require_relative 'appmatcher/x11.rb'
-require_relative 'appmatcher/gnome.rb'
+require_relative 'appmatcher/x11'
+require_relative 'appmatcher/gnome'
 
 module Fusuma
   module Plugin
@@ -13,9 +13,9 @@ module Fusuma
       # @return [Class]
       def backend_klass
         if ENV['DESKTOP_SESSION'] == 'ubuntu-wayland'
-          Fusuma::Plugin::Appmatcher::Gnome
+          Gnome
         else
-          Fusuma::Plugin::Appmatcher::X11
+          X11
         end
       end
     end

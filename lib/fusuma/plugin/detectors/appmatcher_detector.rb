@@ -5,9 +5,14 @@ module Fusuma
     module Detectors
       # Detect KeypressEvent from KeypressBuffer
       class AppmatcherDetector < Detector
+        SOURCES = ['appmatcher']
         BUFFER_TYPE = 'appmatcher'
-
         DEFAULT_NAME = 'global'
+
+        # Always watch buffers and detect them.
+        def watch?
+          true
+        end
 
         # @param buffers [Array<Event>]
         # @return [Event] if event is detected
@@ -19,23 +24,12 @@ module Fusuma
 
           record = buffer.events.last.record
 
-          index_record = Events::Records::IndexRecord.new(
-            index: create_index(record: record),
-            position: :prefix
+          context_record = Events::Records::ContextRecord.new(
+            name: 'application',
+            value: record.name
           )
 
-          create_event(record: index_record)
-        end
-
-        # @param record [Events::Records::KeypressRecord]
-        # @return [Config::Index]
-        def create_index(record:)
-          Config::Index.new(
-            [
-              Config::Index::Key.new('application'),
-              Config::Index::Key.new(record.name, fallback: DEFAULT_NAME)
-            ]
-          )
+          create_event(record: context_record)
         end
       end
     end

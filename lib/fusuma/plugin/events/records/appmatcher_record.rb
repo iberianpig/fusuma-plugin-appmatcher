@@ -10,6 +10,7 @@ module Fusuma
 
           # @param status [String]
           def initialize(name:)
+            super()
             @name = name
           end
         end

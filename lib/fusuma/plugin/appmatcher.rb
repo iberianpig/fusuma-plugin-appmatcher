@@ -7,6 +7,7 @@ require_relative 'appmatcher/gnome'
 
 module Fusuma
   module Plugin
+    # Detect focused applications.
     module Appmatcher
       module_function
 

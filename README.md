@@ -27,75 +27,64 @@ Google-chrome
 Alacritty
 ```
 
-You can use these applicatin name to under `application:` section in config.yml
+You can use these applicatin name to under `application:` context in config.yml
 
 ## Add appmatcher properties and application names to config.yml
 
-Add `appmatcher:` property in `~/.config/fusuma/config.yml`.
+1. Add the `---` symbol to separate the context in config.yml.
 
-lines beginning from `#` are comments
+2. Add `context:` property in `~/.config/fusuma/config.yml`.
 
-### Add `application:` property
-
-* Set the `application:` property in the root of config.yml.
-
-* Under the `application:` property, you can set the `application name` as a property.
+3. Under the `context:` property, you can set the `application: APP_NAME` as a value.
+  * In this context, you can configure mappings to application-specific gestures.
   * For example, you can set `:Google-chrome`, `:Alacritty`, `Org.gnome.Nautilus`, and so on.
-    * You can find property name's hint, with `$ fusuma-appmatcher -l`
-  * If set `global:` as the `application name`, it is used as default configuration.
+  * You can find property name's hint, with `$ fusuma-appmatcher -l`
+
+**NOTE: The first context separated by `---` is the default context**
 
 ### Example
 
-* Move the existing `swipe` or `pinch` sections in config.yml under `application:` > `Global:`.
+In the following example of config.yml
+
+* On Google-chrome, the three-finger gesture is mapped to open in tab, close tab, back in history, forward in history.
+* On Gnome-terminal, the three-finger gesture will be mapped to open in tab, close in tab.
 
 ```diff
-- swipe:
--   4:
--     up:
--       sendkey: 'LEFTCTRL+LEFTALT+DOWN'
--       keypress:
--         LEFTSHIFT:
--           sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+DOWN'
--     down:
--       sendkey: 'LEFTCTRL+LEFTALT+UP'
--       LEFTSHIFT:
--         sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+UP'
-+ application:
-+   Global:
-+     swipe:
-+       4:
-+         up:
-+           sendkey: 'LEFTCTRL+LEFTALT+DOWN'
-+           keypress:
-+             LEFTSHIFT:
-+               sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+DOWN'
-+         down:
-+           sendkey: 'LEFTCTRL+LEFTALT+UP'
-+           LEFTSHIFT:
-+             sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+UP'
-+   Google-chrome:
-+     swipe:
-+       3:
-+         left:
-+           sendkey: 'LEFTALT+RIGHT'
-+         right:
-+           sendkey: 'LEFTALT+LEFT'
-+         up:
-+           sendkey: 'LEFTCTRL+T'
-+         down:
-+           sendkey: 'LEFTCTRL+W'
-+   Alacritty:
-+     swipe:
-+       3: 
-+         up:
-+           window: {fullscreen: 'add'}
-+         down:
-+           window: {fullscreen: 'remove'}
+# this is default context
+swipe:
+  4:
+    up:
+      sendkey: 'LEFTCTRL+LEFTALT+DOWN'
+      keypress:
+        LEFTSHIFT:
+          sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+DOWN'
+    down:
+      sendkey: 'LEFTCTRL+LEFTALT+UP'
+      LEFTSHIFT:
+        sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+UP'
++ ---
++ context:
++   application:  Google-chrome
++ swipe:
++   3:
++     left:
++       sendkey: 'LEFTALT+RIGHT'
++     right:
++       sendkey: 'LEFTALT+LEFT'
++     up:
++       sendkey: 'LEFTCTRL+T'
++     down:
++       sendkey: 'LEFTCTRL+W'
++ ---
++ context:
++   application:  Gnome-terminal
++ swipe:
++   3: 
++     up:
++       sendkey: 'LEFTSHIFT+LEFTCTRL+T'
++     down:
++       sendkey: 'LEFTSHIFT+LEFTCTRL+W'
 ```
-
-### TODO
-
-* [ ] Support Threshold / Interval Settings
 
 ## Contributing
 

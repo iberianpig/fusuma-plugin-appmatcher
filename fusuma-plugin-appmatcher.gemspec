@@ -27,5 +27,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'iniparse'
   spec.add_runtime_dependency 'ruby-dbus'
 
-  spec.add_dependency 'fusuma', '~> 2.0.0.pre2'
+  spec.add_dependency 'fusuma', '~> 2.0.0'
 end

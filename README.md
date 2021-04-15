@@ -1,6 +1,6 @@
 # Fusuma::Plugin::Appmatcher [![Gem Version](https://badge.fury.io/rb/fusuma-plugin-appmatcher.svg)](https://badge.fury.io/rb/fusuma-plugin-appmatcher) [![Build Status](https://travis-ci.com/iberianpig/fusuma-plugin-appmatcher.svg?branch=master)](https://travis-ci.com/iberianpig/fusuma-plugin-appmatcher)
 
-[Fusuma](https://github.com/iberianpig/fusuma) plugin configure per application
+[Fusuma](https://github.com/iberianpig/fusuma) plugin configure app-specific gestures
 
 * Switch gesture mappings by detecting active application.
 * Support X11, Ubuntu-Wayland

@@ -3,7 +3,6 @@
 require 'json'
 require 'dbus'
 require_relative './user_switcher'
-require 'posix/spawn'
 
 module Fusuma
   module Plugin

@@ -22,7 +22,6 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'iniparse'
   spec.add_runtime_dependency 'ruby-dbus'
 
   spec.add_dependency 'fusuma', '~> 2.0.0'

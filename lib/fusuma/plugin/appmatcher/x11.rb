@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
+require 'open3'
 require_relative './user_switcher'
 require 'fusuma/multi_logger'
 require 'fusuma/custom_process'
-require 'posix/spawn'
 
 module Fusuma
   module Plugin
@@ -75,7 +75,7 @@ module Fusuma
           private
 
           def active_window_id(watch: false, &block)
-            _p, i, o, e = POSIX::Spawn.popen4(xprop_active_window_id(watch))
+            i, o, e, _w = Open3.popen3(xprop_active_window_id(watch))
             i.close
             o.each do |line|
               id = line.match(/0x[\da-z]{2,}/)&.to_s
@@ -89,7 +89,8 @@ module Fusuma
             o.close
 
             return nil unless block_given?
-            sleep 1
+
+            sleep 0.5
             active_window_id(watch: watch, &block)
           rescue StandardError => e
             MultiLogger.error e.message

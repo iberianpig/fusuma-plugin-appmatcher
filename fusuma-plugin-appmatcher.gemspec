@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
+  spec.add_dependency "rexml" # ruby-dbus doesn't resolve dependency 
   spec.add_runtime_dependency 'ruby-dbus'
 
   spec.add_dependency 'fusuma', '~> 2.0.0'

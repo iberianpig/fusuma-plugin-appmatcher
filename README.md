@@ -49,7 +49,7 @@ In the following example of config.yml
 * On Google-chrome, the three-finger gesture is mapped to open in tab, close tab, back in history, forward in history.
 * On Gnome-terminal, the three-finger gesture will be mapped to open in tab, close in tab.
 
-```diff
+```yaml
 # this is default context
 swipe:
   4:
@@ -62,28 +62,28 @@ swipe:
       sendkey: 'LEFTCTRL+LEFTALT+UP'
       LEFTSHIFT:
         sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+UP'
-+ ---
-+ context:
-+   application:  Google-chrome
-+ swipe:
-+   3:
-+     left:
-+       sendkey: 'LEFTALT+RIGHT'
-+     right:
-+       sendkey: 'LEFTALT+LEFT'
-+     up:
-+       sendkey: 'LEFTCTRL+T'
-+     down:
-+       sendkey: 'LEFTCTRL+W'
-+ ---
-+ context:
-+   application:  Gnome-terminal
-+ swipe:
-+   3: 
-+     up:
-+       sendkey: 'LEFTSHIFT+LEFTCTRL+T'
-+     down:
-+       sendkey: 'LEFTSHIFT+LEFTCTRL+W'
+---
+context:
+  application:  Google-chrome
+swipe:
+  3:
+    left:
+      sendkey: 'LEFTALT+RIGHT'
+    right:
+      sendkey: 'LEFTALT+LEFT'
+    up:
+      sendkey: 'LEFTCTRL+T'
+    down:
+      sendkey: 'LEFTCTRL+W'
+---
+context:
+  application:  Gnome-terminal
+swipe:
+  3: 
+    up:
+      sendkey: 'LEFTSHIFT+LEFTCTRL+T'
+    down:
+      sendkey: 'LEFTSHIFT+LEFTCTRL+W'
 ```
 
 ## Contributing

@@ -25,5 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rexml" # ruby-dbus doesn't resolve dependency 
   spec.add_runtime_dependency 'ruby-dbus'
 
-  spec.add_dependency 'fusuma', '~> 2.0.0'
+  spec.add_dependency 'fusuma', '~> 2.0'
 end

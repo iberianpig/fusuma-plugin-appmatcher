@@ -21,15 +21,13 @@ module Fusuma
         end
         MultiLogger.error(
           <<~ERROR
-          appmatcher doesn't support
-          XDG_CURRENT_DESKTOP: '#{xdg_current_desktop}'
-          XDG_SESSION_TYPE: '#{xdg_session_type}'"
+            appmatcher doesn't support
+            XDG_CURRENT_DESKTOP: '#{xdg_current_desktop}'
+            XDG_SESSION_TYPE: '#{xdg_session_type}'"
           ERROR
         )
         exit 1
       end
-
-      private
 
       def xdg_session_type
         ENV.fetch('XDG_SESSION_TYPE', '')

@@ -23,8 +23,8 @@ module Fusuma
         context 'when XDG_SESSION_TYPE is wayland' do
           before { allow(Appmatcher).to receive(:xdg_session_type).and_return('wayland') }
 
-          context 'when XDG_CURRENT_DESKTOP is GNOME' do
-            before { allow(Appmatcher).to receive(:xdg_current_desktop).and_return('GNOME') }
+          context 'when XDG_CURRENT_DESKTOP is ubuntu:GNOME' do
+            before { allow(Appmatcher).to receive(:xdg_current_desktop).and_return('ubuntu:GNOME') }
             it { expect(Appmatcher.backend_klass).to eq Appmatcher::Gnome }
           end
 

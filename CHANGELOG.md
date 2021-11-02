@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.5](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/0.1.5) (2021-11-02)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.1.4...0.1.5)
+
+**Fixed bugs:**
+
+- Use XDG\_SESSION\_TYPE and XDG\_CURRENT\_DESKTOP instead of DESKTOP\_SESSION [\#2](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/2) ([iberianpig](https://github.com/iberianpig))
+
+## [v0.1.4](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.1.4) (2021-10-03)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.1.3...v0.1.4)
+
 ## [v0.1.3](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.1.3) (2021-05-09)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.1.2...v0.1.3)

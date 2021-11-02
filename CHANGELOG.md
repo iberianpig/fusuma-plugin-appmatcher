@@ -1,8 +1,8 @@
 # Changelog
 
-## [0.1.5](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/0.1.5) (2021-11-02)
+## [v0.1.5](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.1.5) (2021-11-02)
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.1.4...0.1.5)
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.1.4...v0.1.5)
 
 **Fixed bugs:**
 

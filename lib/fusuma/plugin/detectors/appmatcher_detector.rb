@@ -5,7 +5,7 @@ module Fusuma
     module Detectors
       # Detect KeypressEvent from KeypressBuffer
       class AppmatcherDetector < Detector
-        SOURCES = ['appmatcher']
+        SOURCES = ['appmatcher'].freeze
         BUFFER_TYPE = 'appmatcher'
         DEFAULT_NAME = 'global'
 

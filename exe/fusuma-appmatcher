@@ -16,7 +16,19 @@ opt.on('--version', 'Show version') do |v|
   option[:version] = v
 end
 
+opt.on('--install-gnome-extension',
+       'Install GNOME extension for appmatcher') do |v|
+  option[:install_gnome_extension] = v
+end
+
 opt.parse!(ARGV)
+
+if option[:install_gnome_extension]
+  require_relative '../lib/fusuma/plugin/appmatcher/gnome_extensions/install.rb'
+  Fusuma::Plugin::Appmatcher::GnomeExtensions::Installer.new.call
+  return
+end
+
 
 if option[:list]
   matcher = Fusuma::Plugin::Appmatcher.backend_klass::Matcher.new

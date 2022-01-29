@@ -7,7 +7,6 @@ module Fusuma
       class AppmatcherDetector < Detector
         SOURCES = ['appmatcher'].freeze
         BUFFER_TYPE = 'appmatcher'
-        DEFAULT_NAME = 'global'
 
         # Always watch buffers and detect them.
         def watch?

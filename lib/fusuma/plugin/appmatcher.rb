@@ -4,6 +4,7 @@ require 'fusuma/plugin/appmatcher/version'
 
 require_relative 'appmatcher/x11'
 require_relative 'appmatcher/gnome'
+require_relative 'appmatcher/gnome_extension'
 
 module Fusuma
   module Plugin
@@ -17,15 +18,13 @@ module Fusuma
         when /x11/
           return X11
         when /wayland/
-          return Gnome if xdg_current_desktop =~ /GNOME/
+          case xdg_current_desktop
+          when /GNOME/
+            GnomeExtension
+          end
         end
-        MultiLogger.error(
-          <<~ERROR
-            appmatcher doesn't support
-            XDG_CURRENT_DESKTOP: '#{xdg_current_desktop}'
-            XDG_SESSION_TYPE: '#{xdg_session_type}'"
-          ERROR
-        )
+
+        error_message_not_supported
         exit 1
       end
 
@@ -35,6 +34,16 @@ module Fusuma
 
       def xdg_current_desktop
         ENV.fetch('XDG_CURRENT_DESKTOP', '')
+      end
+
+      def error_message_not_supported
+        MultiLogger.error(
+          <<~ERROR
+            appmatcher doesn't support
+            XDG_CURRENT_DESKTOP: '#{xdg_current_desktop}'
+            XDG_SESSION_TYPE: '#{xdg_session_type}'"
+          ERROR
+        )
       end
     end
   end

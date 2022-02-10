@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../appmatcher'
+require_relative "../appmatcher"
 
 module Fusuma
   module Plugin

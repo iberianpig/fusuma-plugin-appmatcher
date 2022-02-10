@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'fusuma/plugin/appmatcher/version'
+require "fusuma/plugin/appmatcher/version"
 
-require_relative 'appmatcher/x11'
-require_relative 'appmatcher/gnome'
-require_relative 'appmatcher/gnome_extension'
+require_relative "appmatcher/x11"
+require_relative "appmatcher/gnome"
+require_relative "appmatcher/gnome_extension"
 
 module Fusuma
   module Plugin
@@ -29,11 +29,11 @@ module Fusuma
       end
 
       def xdg_session_type
-        ENV.fetch('XDG_SESSION_TYPE', '')
+        ENV.fetch("XDG_SESSION_TYPE", "")
       end
 
       def xdg_current_desktop
-        ENV.fetch('XDG_CURRENT_DESKTOP', '')
+        ENV.fetch("XDG_CURRENT_DESKTOP", "")
       end
 
       def error_message_not_supported

@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
-require 'fusuma/custom_process'
-require 'etc'
+require "fusuma/custom_process"
+require "etc"
 
 module Fusuma
   module Plugin
     module Appmatcher
+      # Drop sudo privileges
       class UserSwitcher
         include CustomProcess
         User = Struct.new(:username, :uid, :gid)
         def initialize
-          username = ENV['SUDO_USER'] || Etc.getlogin
+          username = ENV["SUDO_USER"] || Etc.getlogin
           uid = `id -u #{username}`.chomp.to_i
           gid = `id -g #{username}`.chomp.to_i
           @login_user = User.new(username, uid, gid)

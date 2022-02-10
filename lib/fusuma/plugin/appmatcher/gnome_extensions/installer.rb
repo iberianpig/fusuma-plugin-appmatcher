@@ -7,6 +7,7 @@ module Fusuma
   module Plugin
     module Appmatcher
       module GnomeExtensions
+        # Install Gnome Extension
         class Installer
           EXTENSION = "./appmatcher@iberianpig.dev"
 

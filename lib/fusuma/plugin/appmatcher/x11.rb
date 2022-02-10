@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'open3'
-require_relative './user_switcher'
-require 'fusuma/multi_logger'
-require 'fusuma/custom_process'
+require "open3"
+require_relative "./user_switcher"
+require "fusuma/multi_logger"
+require "fusuma/custom_process"
 
 module Fusuma
   module Plugin
@@ -50,7 +50,7 @@ module Fusuma
         class Matcher
           # @return [Array<String>]
           def running_applications
-            `xprop -root _NET_CLIENT_LIST_STACKING`.split(', ')
+            `xprop -root _NET_CLIENT_LIST_STACKING`.split(", ")
                                                    .map { |id_str| id_str.match(/0x[\da-z]{2,}/).to_s }
                                                    .map { |id| active_application(id) }
           end
@@ -59,16 +59,16 @@ module Fusuma
           # @return [NilClass]
           def active_application(id = active_window_id)
             @cache ||= {}
-            @cache[id] ||= begin
-              return if id.nil?
-
-              `xprop -id #{id} WM_CLASS | cut -d "=" -f 2 | tr -d '"'`.strip.split(', ').last
-            end
+            @cache[id] ||= if id.nil?
+                             nil
+                           else
+                             `xprop -id #{id} WM_CLASS | cut -d "=" -f 2 | tr -d '"'`.strip.split(", ").last
+                           end
           end
 
           def on_active_application_changed
             active_window_id(watch: true) do |id|
-              yield(active_application(id) || 'NOT FOUND')
+              yield(active_application(id) || "NOT FOUND")
             end
           end
 
@@ -99,7 +99,7 @@ module Fusuma
           # @param spy [TrueClass, FalseClass]
           # @return [String]
           def xprop_active_window_id(spy)
-            spy_option = '-spy' if spy
+            spy_option = "-spy" if spy
             "xprop #{spy_option} -root _NET_ACTIVE_WINDOW"
           end
         end

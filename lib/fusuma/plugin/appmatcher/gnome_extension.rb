@@ -109,6 +109,7 @@ module Fusuma
           end
         end
 
+        # Focused Application
         class Application
           attr_reader :wm_class, :pid, :id, :title, :focus
 

@@ -1,4 +1,4 @@
-# Fusuma::Plugin::Appmatcher [![Gem Version](https://badge.fury.io/rb/fusuma-plugin-appmatcher.svg)](https://badge.fury.io/rb/fusuma-plugin-appmatcher) [![Build Status](https://travis-ci.com/iberianpig/fusuma-plugin-appmatcher.svg?branch=master)](https://travis-ci.com/iberianpig/fusuma-plugin-appmatcher)
+# Fusuma::Plugin::Appmatcher [![Gem Version](https://badge.fury.io/rb/fusuma-plugin-appmatcher.svg)](https://badge.fury.io/rb/fusuma-plugin-appmatcher) [![Build Status](https://github.com/iberianpig/fusuma/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/iberianpig/fusuma/actions/workflows/ubuntu.yml)
 
 [Fusuma](https://github.com/iberianpig/fusuma) plugin configure app-specific gestures
 

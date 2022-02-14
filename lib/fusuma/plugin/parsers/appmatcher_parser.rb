@@ -5,7 +5,7 @@ module Fusuma
     module Parsers
       # Generate AppmatcherRecord from libinput_command_input
       class AppmatcherParser < Parser
-        DEFAULT_SOURCE = 'appmatcher_input'
+        DEFAULT_SOURCE = "appmatcher_input"
 
         # @param record [String]
         # @return [Records::Gesture, nil]

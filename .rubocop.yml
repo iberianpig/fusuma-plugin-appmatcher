@@ -1,0 +1,54 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  TargetRubyVersion: '2.5'
+  NewCops: enable
+
+Metrics/ModuleLength:
+  Exclude:
+    - "**/*_spec.rb"
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - "**/*_spec.rb"
+    - "*.gemspec"
+
+Metrics/AbcSize:
+  Max: 20
+
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - "*.gemspec"
+    - "**/*_spec.rb"
+
+# For rubocop < 1.0.0
+Style/HashEachMethods:
+  Enabled: true
+
+# For rubocop < 1.0.0
+Style/HashTransformKeys:
+  Enabled: true
+
+# For rubocop < 1.0.0
+Style/HashTransformValues:
+  Enabled: true
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+  ConsistentQuotesInMultiline: false
+
+Lint/RaiseException:
+   Enabled: true
+Lint/StructNewOverride:
+   Enabled: true
+
+# for declaring dummy classes in ./spec
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+    - "**/*_spec.rb"
+

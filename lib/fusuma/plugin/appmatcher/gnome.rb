@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'json'
-require 'dbus'
-require_relative './user_switcher'
+require "json"
+require "dbus"
+require_relative "./user_switcher"
 
 module Fusuma
   module Plugin
@@ -21,7 +21,7 @@ module Fusuma
           @watch_start ||= begin
             pid = UserSwitcher.new.as_user do |user|
               @reader.close
-              ENV['DBUS_SESSION_BUS_ADDRESS'] = "unix:path=/run/user/#{user.uid}/bus"
+              ENV["DBUS_SESSION_BUS_ADDRESS"] = "unix:path=/run/user/#{user.uid}/bus"
               register_on_application_changed(Matcher.new)
             end
             Process.detach(pid)
@@ -50,8 +50,8 @@ module Fusuma
         class Matcher
           def initialize
             session_bus = DBus.session_bus
-            service = session_bus.service('org.gnome.Shell')
-            @interface = service['/org/gnome/Shell']['org.gnome.Shell']
+            service = session_bus.service("org.gnome.Shell")
+            @interface = service["/org/gnome/Shell"]["org.gnome.Shell"]
           rescue DBus::Error => e
             MultiLogger.error "DBus::Error: #{e.message}"
 
@@ -116,7 +116,7 @@ module Fusuma
               new_application = active_application
               next if @old_application == new_application
 
-              yield(new_application || 'NOT FOUND') if block_given?
+              yield(new_application || "NOT FOUND") if block_given?
               @old_application = new_application
             end
           end

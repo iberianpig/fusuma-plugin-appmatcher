@@ -1,0 +1,13 @@
+{
+  "name": "Appmatcher",
+  "description": "notify focused application using D-Bus",
+  "shell-version" : [
+    "3.36",
+    "3.38",
+    "40",
+    "41"
+  ],
+  "url" : "https://github.com/iberianpig/fusuma-plugin-appmatcher",
+  "uuid": "appmatcher@iberianpig.dev",
+  "version" : 1
+}

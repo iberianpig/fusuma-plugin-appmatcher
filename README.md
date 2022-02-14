@@ -16,6 +16,17 @@ Run the following code in your terminal.
 $ sudo gem install fusuma-plugin-appmatcher
 ```
 
+### Install Appmatcher GNOME Shell Extensions on Wayland
+
+Gnome Wayland version 41 and later does not allow to access information about window or application like focused app.
+So fusuma-plugin-appmatcher solves this problem via Appmatcher gnome-extension.
+
+```sh
+$ fusuma-appmatcher --install-gnome-extension
+```
+
+Restart your session(logout/login), then activate Appmatcher on gnome-extensions-app
+
 ## List Running Application names
 
 `$ fusuma-appmatcher -l` prints Running Application names.

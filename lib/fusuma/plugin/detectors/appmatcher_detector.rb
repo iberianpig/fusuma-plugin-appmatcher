@@ -5,9 +5,8 @@ module Fusuma
     module Detectors
       # Detect KeypressEvent from KeypressBuffer
       class AppmatcherDetector < Detector
-        SOURCES = ['appmatcher'].freeze
-        BUFFER_TYPE = 'appmatcher'
-        DEFAULT_NAME = 'global'
+        SOURCES = ["appmatcher"].freeze
+        BUFFER_TYPE = "appmatcher"
 
         # Always watch buffers and detect them.
         def watch?
@@ -25,7 +24,7 @@ module Fusuma
           record = buffer.events.last.record
 
           context_record = Events::Records::ContextRecord.new(
-            name: 'application',
+            name: "application",
             value: record.name
           )
 

@@ -10,11 +10,6 @@ module Fusuma
       end
 
       describe "#backend_klass" do
-        context "when XDG_CURRENT_DESKTOP is UNKNOWN" do
-          before { allow(Appmatcher).to receive(:xdg_current_desktop).and_return("UNKNOWN") }
-          it { expect { Appmatcher.backend_klass }.to raise_error }
-        end
-
         context "when XDG_SESSION_TYPE is x11" do
           before { allow(Appmatcher).to receive(:xdg_session_type).and_return("x11") }
           it { expect(Appmatcher.backend_klass).to eq Appmatcher::X11 }
@@ -30,7 +25,8 @@ module Fusuma
 
           context "when XDG_CURRENT_DESKTOP is UNKNOWN" do
             before { allow(Appmatcher).to receive(:xdg_current_desktop).and_return("UNKNOWN") }
-            it { expect { Appmatcher.backend_klass }.to raise_error }
+            before { allow(MultiLogger).to receive(:error).and_return(anything) }
+            it { expect { Appmatcher.backend_klass }.to raise_error(SystemExit) }
           end
         end
       end

@@ -10,6 +10,9 @@ module Fusuma
       class UserSwitcher
         include CustomProcess
         User = Struct.new(:username, :uid, :gid)
+
+        attr_reader :login_user
+
         def initialize
           username = ENV["SUDO_USER"] || Etc.getlogin
           uid = `id -u #{username}`.chomp.to_i

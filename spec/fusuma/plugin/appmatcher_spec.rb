@@ -10,9 +10,10 @@ module Fusuma
       end
 
       describe "#backend_klass" do
+        subject { Appmatcher.backend_klass }
         context "when XDG_SESSION_TYPE is x11" do
           before { allow(Appmatcher).to receive(:xdg_session_type).and_return("x11") }
-          it { expect(Appmatcher.backend_klass).to eq Appmatcher::X11 }
+          it { is_expected.to eq Appmatcher::X11 }
         end
 
         context "when XDG_SESSION_TYPE is wayland" do
@@ -22,22 +23,26 @@ module Fusuma
             before { allow(Appmatcher).to receive(:xdg_current_desktop).and_return("ubuntu:GNOME") }
 
             context "when gnome-extension is installed" do
-              before { allow_any_instance_of(Appmatcher::GnomeExtensions::Installer).to receive(:installed?).and_return(true)}
-              it { expect(Appmatcher.backend_klass).to eq Appmatcher::GnomeExtension }
+              before do
+                allow_any_instance_of(Appmatcher::GnomeExtensions::Installer).to receive(:installed?).and_return(true)
+              end
+              it { is_expected.to eq Appmatcher::GnomeExtension }
             end
 
             context "when gnome-extension is NOT installed" do
-              before { allow_any_instance_of(Appmatcher::GnomeExtensions::Installer).to receive(:installed?).and_return(false)}
-              it { expect(Appmatcher.backend_klass).to eq Appmatcher::Gnome }
+              before do
+                allow_any_instance_of(Appmatcher::GnomeExtensions::Installer).to receive(:installed?).and_return(false)
+              end
+              it { is_expected.to eq Appmatcher::Gnome }
             end
           end
 
           context "when XDG_CURRENT_DESKTOP is UNKNOWN" do
-            before { 
+            before do
               allow(Appmatcher).to receive(:xdg_current_desktop).and_return("UNKNOWN")
               allow(MultiLogger).to receive(:error)
-            }
-            it { expect { Appmatcher.backend_klass }.to raise_error(SystemExit) }
+            end
+            it { expect { subject }.to raise_error(SystemExit) }
           end
         end
       end

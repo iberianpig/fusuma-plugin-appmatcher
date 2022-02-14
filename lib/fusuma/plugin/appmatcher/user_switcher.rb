@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "fusuma/string_support" # This line is not required for Fusuma 2.3 and later.
 require "fusuma/custom_process"
 require "etc"
 

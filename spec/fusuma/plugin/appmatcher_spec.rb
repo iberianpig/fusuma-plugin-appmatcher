@@ -20,12 +20,23 @@ module Fusuma
 
           context "when XDG_CURRENT_DESKTOP is ubuntu:GNOME" do
             before { allow(Appmatcher).to receive(:xdg_current_desktop).and_return("ubuntu:GNOME") }
-            it { expect(Appmatcher.backend_klass).to eq Appmatcher::Gnome }
+
+            context "when gnome-extension is installed" do
+              before { allow_any_instance_of(Appmatcher::GnomeExtensions::Installer).to receive(:installed?).and_return(true)}
+              it { expect(Appmatcher.backend_klass).to eq Appmatcher::GnomeExtension }
+            end
+
+            context "when gnome-extension is NOT installed" do
+              before { allow_any_instance_of(Appmatcher::GnomeExtensions::Installer).to receive(:installed?).and_return(false)}
+              it { expect(Appmatcher.backend_klass).to eq Appmatcher::Gnome }
+            end
           end
 
           context "when XDG_CURRENT_DESKTOP is UNKNOWN" do
-            before { allow(Appmatcher).to receive(:xdg_current_desktop).and_return("UNKNOWN") }
-            before { allow(MultiLogger).to receive(:error).and_return(anything) }
+            before { 
+              allow(Appmatcher).to receive(:xdg_current_desktop).and_return("UNKNOWN")
+              allow(MultiLogger).to receive(:error)
+            }
             it { expect { Appmatcher.backend_klass }.to raise_error(SystemExit) }
           end
         end

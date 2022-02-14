@@ -21,19 +21,22 @@ module Fusuma
           end
 
           def uninstall
+            puts "Appmatcher Gnome Shell Extension is not installed" unless installed?
+
             pid = UserSwitcher.new.as_user do |user|
-              if installed?(user.username)
-                FileUtils.rm_r(install_path(user.username))
-                puts "Uninstalled Appmatcher Gnome Shell Extension from #{install_path(user.username)}."
-              else
-                puts "Appmatcher Gnome Shell Extension is not installed"
-              end
+              FileUtils.rm_r(install_path(user.username))
+              puts "Uninstalled Appmatcher Gnome Shell Extension from #{install_path(user.username)}."
             end
             Process.waitpid(pid)
           end
 
-          def installed?(username)
-            File.exist?(install_path(username))
+          def installed?
+            result = false
+            pid = UserSwitcher.new.as_user do |user|
+              result = File.exist?(install_path(user.username))
+            end
+            Process.waitpid(pid)
+            result
           end
 
           private

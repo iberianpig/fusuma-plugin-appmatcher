@@ -1,16 +1,16 @@
 # Changelog
 
-## [0.2.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/0.2.0) (2022-02-14)
+## [v0.2.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.2.0) (2022-02-14)
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.1.6...0.2.0)
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.1.6...v0.2.0)
+
+**Implemented enhancements:**
+
+- Add Extension for Gnome Shell on Wayland [\#4](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/4) ([iberianpig](https://github.com/iberianpig))
 
 **Closed issues:**
 
 - Doesn't works in Wayland with Gnome 41 [\#3](https://github.com/iberianpig/fusuma-plugin-appmatcher/issues/3)
-
-**Merged pull requests:**
-
-- Add Extension for Gnome Shell on Wayland [\#4](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/4) ([iberianpig](https://github.com/iberianpig))
 
 ## [v0.1.6](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.1.6) (2021-11-02)
 

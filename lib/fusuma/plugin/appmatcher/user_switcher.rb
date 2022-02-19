@@ -30,7 +30,9 @@ module Fusuma
 
         # Execute the provided block in a child process as the specified user
         # The parent blocks until the child finishes.
-        def as_user(user = @login_user)
+        def as_user(user = @login_user, proctitle:)
+          self.proctitle = "#{self.class.name.underscore}(#{user.username}) -> #{proctitle}"
+
           fork do
             drop_priv(user)
             yield(user) if block_given?

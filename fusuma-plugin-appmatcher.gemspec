@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rexml" # ruby-dbus doesn't resolve dependency
   spec.add_runtime_dependency "ruby-dbus"
 
-  spec.add_dependency "fusuma", "~> 2.3"
+  spec.add_dependency "fusuma", "~> 2.4"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.required_ruby_version = ">= 2.5.1" # https://packages.ubuntu.com/search?keywords=ruby&searchon=names&exact=1&suite=all&section=main

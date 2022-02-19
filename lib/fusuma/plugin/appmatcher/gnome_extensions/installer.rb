@@ -23,7 +23,7 @@ module Fusuma
           def uninstall
             return puts "Appmatcher Gnome Shell Extension is not installed in #{user_extension_dir}/" unless installed?
 
-            pid = UserSwitcher.new.as_user do |user|
+            pid = UserSwitcher.new.as_user(proctitle: self.class.name.underscore) do |user|
               FileUtils.rm_r(install_path(user.username))
               puts "Uninstalled Appmatcher Gnome Shell Extension from #{install_path(user.username)}"
             end

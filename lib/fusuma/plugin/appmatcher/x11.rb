@@ -20,7 +20,7 @@ module Fusuma
         # @return [Integer] Process id
         def watch_start
           @watch_start ||= begin
-            pid = UserSwitcher.new.as_user do |_user|
+            pid = UserSwitcher.new.as_user(proctitle: self.class.name.underscore) do |_user|
               @reader.close
               register_on_application_changed(Matcher.new)
             end

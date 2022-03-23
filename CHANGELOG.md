@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.1](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/0.3.1) (2022-03-23)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.3.0...0.3.1)
+
+**Fixed bugs:**
+
+- Unable to install the gnome extension [\#5](https://github.com/iberianpig/fusuma-plugin-appmatcher/issues/5)
+
+## [v0.3.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.3.0) (2022-03-13)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.2.3...v0.3.0)
+
 ## [v0.2.3](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.2.3) (2022-02-20)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.2.2...v0.2.3)

@@ -12,7 +12,7 @@ module Fusuma
           EXTENSION = "./appmatcher@iberianpig.dev"
 
           def install
-            pid = UserSwitcher.new.as_user do |user|
+            pid = UserSwitcher.new.as_user(proctitle: self.class.name.underscore) do |user|
               FileUtils.cp_r(source_path, user_extension_dir(user.username))
               puts "Installed Appmatcher Gnome Shell Extension to #{user_extension_dir(user.username)}"
               puts "Restart your session, then activate Appmatcher on gnome-extensions-app"

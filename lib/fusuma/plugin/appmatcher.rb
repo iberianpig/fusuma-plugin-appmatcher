@@ -44,7 +44,7 @@ module Fusuma
           <<~ERROR
             appmatcher doesn't support
             XDG_CURRENT_DESKTOP: '#{xdg_current_desktop}'
-            XDG_SESSION_TYPE: '#{xdg_session_type}'"
+            XDG_SESSION_TYPE: '#{xdg_session_type}'
           ERROR
         )
       end

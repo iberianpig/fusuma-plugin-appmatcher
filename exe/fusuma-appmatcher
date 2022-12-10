@@ -49,6 +49,9 @@ end
 
 if option[:version]
   puts Fusuma::Plugin::Appmatcher::VERSION
+  puts "XDG_CURRENT_DESKTOP: #{ENV.fetch('XDG_CURRENT_DESKTOP', nil)}"
+  puts "XDG_SESSION_TYPE: #{ENV.fetch('XDG_SESSION_TYPE', nil)}"
+  puts "Backend: #{Fusuma::Plugin::Appmatcher.backend_klass}"
   return
 end
 

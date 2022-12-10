@@ -1,45 +1,44 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'optparse'
-require_relative '../lib/fusuma/plugin/appmatcher.rb'
+require "optparse"
+require_relative "../lib/fusuma/plugin/appmatcher"
 
 option = {}
 opt = OptionParser.new
 
-opt.on('-l', '--list-applications',
-       'List applications') do |v|
+opt.on("-l", "--list-applications",
+       "List applications") do |v|
   option[:list] = v
 end
 
-opt.on('--version', 'Show version') do |v|
+opt.on("--version", "Show version") do |v|
   option[:version] = v
 end
 
-opt.on('--install-gnome-extension',
-       'Install GNOME extension for appmatcher') do |v|
+opt.on("--install-gnome-extension",
+       "Install GNOME extension for appmatcher") do |v|
   option[:install_gnome_extension] = v
 end
 
-opt.on('--uninstall-gnome-extension',
-       'Uninstall GNOME extension for appmatcher') do |v|
+opt.on("--uninstall-gnome-extension",
+       "Uninstall GNOME extension for appmatcher") do |v|
   option[:uninstall_gnome_extension] = v
 end
 
 opt.parse!(ARGV)
 
 if option[:install_gnome_extension]
-  require_relative '../lib/fusuma/plugin/appmatcher/gnome_extensions/installer.rb'
+  require_relative "../lib/fusuma/plugin/appmatcher/gnome_extensions/installer"
   Fusuma::Plugin::Appmatcher::GnomeExtensions::Installer.new.install
   return
 end
 
 if option[:uninstall_gnome_extension]
-  require_relative '../lib/fusuma/plugin/appmatcher/gnome_extensions/installer.rb'
+  require_relative "../lib/fusuma/plugin/appmatcher/gnome_extensions/installer"
   Fusuma::Plugin::Appmatcher::GnomeExtensions::Installer.new.uninstall
   return
 end
-
 
 if option[:list]
   matcher = Fusuma::Plugin::Appmatcher.backend_klass::Matcher.new

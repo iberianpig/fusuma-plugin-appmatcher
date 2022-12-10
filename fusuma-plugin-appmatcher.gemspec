@@ -5,21 +5,21 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "fusuma/plugin/appmatcher/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "fusuma-plugin-appmatcher"
-  spec.version       = Fusuma::Plugin::Appmatcher::VERSION
-  spec.authors       = ["iberianpig"]
-  spec.email         = ["yhkyky@gmail.com"]
+  spec.name = "fusuma-plugin-appmatcher"
+  spec.version = Fusuma::Plugin::Appmatcher::VERSION
+  spec.authors = ["iberianpig"]
+  spec.email = ["yhkyky@gmail.com"]
 
-  spec.summary       = "Fusuma plugin to assign gesture mapping per application"
-  spec.description   = "fusuma-plugin-appmatcher is Fusuma plugin for assigning gesture mapping per application."
-  spec.homepage      = "https://github.com/iberianpig/fusuma-plugin-appmatcher"
-  spec.license       = "MIT"
+  spec.summary = "Fusuma plugin to assign gesture mapping per application"
+  spec.description = "fusuma-plugin-appmatcher is Fusuma plugin for assigning gesture mapping per application."
+  spec.homepage = "https://github.com/iberianpig/fusuma-plugin-appmatcher"
+  spec.license = "MIT"
 
   # Specify which files should be added to the gem when it is released.
-  spec.files          = Dir["{bin,lib,exe}/**/*", "LICENSE*", "README*", "*.gemspec"]
-  spec.test_files     = Dir["{test,spec,features}/**/*"]
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.files = Dir["{bin,lib,exe}/**/*", "LICENSE*", "README*", "*.gemspec"]
+  spec.test_files = Dir["{test,spec,features}/**/*"]
+  spec.bindir = "exe"
+  spec.executables = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
   spec.add_dependency "rexml" # ruby-dbus doesn't resolve dependency

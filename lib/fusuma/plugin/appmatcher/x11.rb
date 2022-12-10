@@ -41,7 +41,7 @@ module Fusuma
           @writer.puts(name)
         rescue Errno::EPIPE
           exit 0
-        rescue StandardError => e
+        rescue => e
           MultiLogger.error e.message
           exit 1
         end
@@ -51,8 +51,8 @@ module Fusuma
           # @return [Array<String>]
           def running_applications
             `xprop -root _NET_CLIENT_LIST_STACKING`.split(", ")
-                                                   .map { |id_str| id_str.match(/0x[\da-z]{2,}/).to_s }
-                                                   .map { |id| active_application(id) }
+              .map { |id_str| id_str.match(/0x[\da-z]{2,}/).to_s }
+              .map { |id| active_application(id) }
           end
 
           # @return [String]
@@ -60,10 +60,10 @@ module Fusuma
           def active_application(id = active_window_id)
             @cache ||= {}
             @cache[id] ||= if id.nil?
-                             nil
-                           else
-                             `xprop -id #{id} WM_CLASS | cut -d "=" -f 2 | tr -d '"'`.strip.split(", ").last
-                           end
+              nil
+            else
+              `xprop -id #{id} WM_CLASS | cut -d "=" -f 2 | tr -d '"'`.strip.split(", ").last
+            end
           end
 
           def on_active_application_changed
@@ -80,7 +80,7 @@ module Fusuma
             o.each do |line|
               id = line.match(/0x[\da-z]{2,}/)&.to_s
 
-              return id unless block_given?
+              return id unless block
 
               yield(id)
             end
@@ -88,11 +88,11 @@ module Fusuma
             e.close
             o.close
 
-            return nil unless block_given?
+            return nil unless block
 
             sleep 0.5
             active_window_id(watch: watch, &block)
-          rescue StandardError => e
+          rescue => e
             MultiLogger.error e.message
           end
 

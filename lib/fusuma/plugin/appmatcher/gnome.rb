@@ -41,7 +41,7 @@ module Fusuma
           @writer.puts(name)
         rescue Errno::EPIPE
           exit 0
-        rescue StandardError => e
+        rescue => e
           MultiLogger.error e.message
           exit 1
         end
@@ -101,7 +101,7 @@ module Fusuma
             if success
               response = begin
                 JSON.parse(body)
-              rescue StandardError
+              rescue
                 nil
               end
               return response

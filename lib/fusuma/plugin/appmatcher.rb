@@ -2,10 +2,11 @@
 
 require "fusuma/plugin/appmatcher/version"
 
-require_relative "appmatcher/x11"
-require_relative "appmatcher/gnome"
-require_relative "appmatcher/gnome_extension"
-require_relative "appmatcher/gnome_extensions/installer"
+require "fusuma/plugin/appmatcher/x11"
+require "fusuma/plugin/appmatcher/gnome"
+require "fusuma/plugin/appmatcher/gnome_extension"
+require "fusuma/plugin/appmatcher/gnome_extensions/installer"
+require "fusuma/plugin/appmatcher/dummy_backend"
 
 module Fusuma
   module Plugin

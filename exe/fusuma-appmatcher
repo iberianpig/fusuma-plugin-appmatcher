@@ -8,7 +8,7 @@ option = {}
 opt = OptionParser.new
 
 opt.on("-l", "--list-applications",
-       "List applications") do |v|
+  "List applications") do |v|
   option[:list] = v
 end
 
@@ -17,12 +17,12 @@ opt.on("--version", "Show version") do |v|
 end
 
 opt.on("--install-gnome-extension",
-       "Install GNOME extension for appmatcher") do |v|
+  "Install GNOME extension for appmatcher") do |v|
   option[:install_gnome_extension] = v
 end
 
 opt.on("--uninstall-gnome-extension",
-       "Uninstall GNOME extension for appmatcher") do |v|
+  "Uninstall GNOME extension for appmatcher") do |v|
   option[:uninstall_gnome_extension] = v
 end
 
@@ -48,8 +48,8 @@ end
 
 if option[:version]
   puts Fusuma::Plugin::Appmatcher::VERSION
-  puts "XDG_CURRENT_DESKTOP: #{ENV.fetch('XDG_CURRENT_DESKTOP', nil)}"
-  puts "XDG_SESSION_TYPE: #{ENV.fetch('XDG_SESSION_TYPE', nil)}"
+  puts "XDG_CURRENT_DESKTOP: #{ENV.fetch("XDG_CURRENT_DESKTOP", nil)}"
+  puts "XDG_SESSION_TYPE: #{ENV.fetch("XDG_SESSION_TYPE", nil)}"
   puts "Backend: #{Fusuma::Plugin::Appmatcher.backend_klass}"
   return
 end

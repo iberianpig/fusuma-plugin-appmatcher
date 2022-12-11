@@ -9,7 +9,7 @@ module Fusuma
     module Appmatcher
       # Search Active Window's Name
       class GnomeExtension
-        attr_reader :matcher, :reader, :writer
+        attr_reader :reader, :writer
 
         def initialize
           @reader, @writer = IO.pipe

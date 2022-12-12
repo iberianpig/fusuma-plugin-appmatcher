@@ -42,7 +42,7 @@ module Fusuma
               allow(Appmatcher).to receive(:xdg_current_desktop).and_return("UNKNOWN")
               allow(MultiLogger).to receive(:error)
             end
-            it { expect { subject }.to raise_error(SystemExit) }
+            it { is_expected.to eq Appmatcher::UnsupportedBackend }
           end
         end
       end

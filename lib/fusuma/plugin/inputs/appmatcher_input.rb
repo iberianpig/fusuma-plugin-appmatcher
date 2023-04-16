@@ -22,6 +22,17 @@ module Fusuma
 
           @backend.reader
         end
+
+        # @param record [String] application name
+        # @return [Event]
+        def create_event(record:)
+          e = Events::Event.new(
+            tag: tag,
+            record: Events::Records::AppmatcherRecord.new(name: record)
+          )
+          MultiLogger.debug(input_event: e)
+          e
+        end
       end
     end
   end

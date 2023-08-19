@@ -10,6 +10,8 @@ module Fusuma
     module Appmatcher
       # Dummy for unsupported Backend
       class UnsupportedBackend
+        include UserSwitcher
+
         attr_reader :reader, :writer
 
         def initialize
@@ -21,11 +23,10 @@ module Fusuma
         # @return [Integer] Process id
         def watch_start
           @watch_start ||= begin
-            pid = UserSwitcher.new.as_user(proctitle: self.class.name.underscore) do
+            pid = as_user(proctitle: self.class.name.underscore) do
               @reader.close
               sleep # stop indefinitely without using CPU
             end
-            Process.detach(pid)
             pid
           end
         end

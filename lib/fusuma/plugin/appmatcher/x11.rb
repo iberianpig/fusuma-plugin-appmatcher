@@ -10,6 +10,8 @@ module Fusuma
     module Appmatcher
       # Search Active Window's Name
       class X11
+        include UserSwitcher
+
         attr_reader :reader, :writer
 
         def initialize
@@ -20,11 +22,10 @@ module Fusuma
         # @return [Integer] Process id
         def watch_start
           @watch_start ||= begin
-            pid = UserSwitcher.new.as_user(proctitle: self.class.name.underscore) do |_user|
+            pid = as_user(proctitle: self.class.name.underscore) do |_user|
               @reader.close
               register_on_application_changed(Matcher.new)
             end
-            Process.detach(pid)
             pid
           end
         end

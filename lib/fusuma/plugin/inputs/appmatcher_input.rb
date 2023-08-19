@@ -23,6 +23,11 @@ module Fusuma
           @backend.reader
         end
 
+        def shutdown
+          # CustomProcess#shutdown
+          @backend.shutdown
+        end
+
         # @param record [String] application name
         # @return [Event]
         def create_event(record:)

@@ -30,7 +30,7 @@ module Fusuma
         context "with appmatcher events in buffer" do
           before do
             record = Events::Records::AppmatcherRecord.new(name: "dummy")
-            event = Events::Event.new(tag: "appmatcher_parser", record: record)
+            event = Events::Event.new(tag: "appmatcher_input", record: record)
 
             @buffer.buffer(event)
           end
@@ -49,8 +49,8 @@ module Fusuma
           before do
             record1 = Events::Records::AppmatcherRecord.new(name: "dummy1")
             record2 = Events::Records::AppmatcherRecord.new(name: "dummy2")
-            event1 = Events::Event.new(tag: "appmatcher_parser", record: record1)
-            event2 = Events::Event.new(tag: "appmatcher_parser", record: record2)
+            event1 = Events::Event.new(tag: "appmatcher_input", record: record1)
+            event2 = Events::Event.new(tag: "appmatcher_input", record: record2)
 
             @buffer.buffer(event1)
             @buffer.buffer(event2)

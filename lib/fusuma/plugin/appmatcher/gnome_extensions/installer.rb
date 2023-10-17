@@ -13,6 +13,22 @@ module Fusuma
 
           EXTENSION = "./appmatcher@iberianpig.dev"
 
+          def gnome_shell_extension_path
+            output = `gnome-shell --version`
+            version = output.match(/GNOME Shell (\d+\.\d+)/)
+
+            if version
+              version_number = version[1].to_f
+              if version_number >= 45.0
+                return './appmatcher45@iberianpig.dev'
+              else
+                return './appmatcher@iberianpig.dev'
+              end
+            else
+              return './appmatcher@iberianpig.dev'
+            end
+          end
+
           def install
             pid = as_user(proctitle: self.class.name.underscore) do |user|
               FileUtils.cp_r(source_path, user_extension_dir(user.username))
@@ -47,7 +63,7 @@ module Fusuma
           end
 
           def source_path
-            File.expand_path(EXTENSION, __dir__)
+            File.expand_path(gnome_shell_extension_path, __dir__)
           end
 
           def login_username

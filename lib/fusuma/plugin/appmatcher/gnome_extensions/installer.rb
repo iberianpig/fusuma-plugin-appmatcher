@@ -20,12 +20,12 @@ module Fusuma
             if version
               version_number = version[1].to_f
               if version_number >= 45.0
-                return './appmatcher45@iberianpig.dev'
+                "./appmatcher45@iberianpig.dev"
               else
-                return './appmatcher@iberianpig.dev'
+                "./appmatcher@iberianpig.dev"
               end
             else
-              return './appmatcher@iberianpig.dev'
+              "./appmatcher@iberianpig.dev"
             end
           end
 

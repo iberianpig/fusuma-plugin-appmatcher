@@ -2,7 +2,7 @@
 
 require "json"
 require "dbus"
-require_relative "./user_switcher"
+require_relative "user_switcher"
 
 module Fusuma
   module Plugin

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "open3"
-require_relative "./user_switcher"
+require_relative "user_switcher"
 require "fusuma/multi_logger"
 require "fusuma/custom_process"
 

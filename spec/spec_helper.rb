@@ -2,7 +2,7 @@
 
 require "bundler/setup"
 require "fusuma/plugin/appmatcher"
-require 'rspec/debug'
+require "rspec/debug"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

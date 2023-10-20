@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.1](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/0.6.1) (2023-10-20)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.6.0...0.6.1)
+
+**Implemented enhancements:**
+
+- support gnome shell 45 [\#8](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/8) ([krruzic](https://github.com/krruzic))
+
 ## [v0.6.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.6.0) (2023-08-21)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.5.0...v0.6.0)

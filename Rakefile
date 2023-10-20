@@ -28,7 +28,7 @@ task :bump, :type do |_, args|
   Rake::Task[:changelog].execute
 
   puts "update CHANGELOG"
-  `git add CHANGELOG.md && git commit -m "docs(CHANGELOG) update"`
+  `git add CHANGELOG.md`
 
   puts "Bump version to #{label}"
   Bump::Bump.run(label)

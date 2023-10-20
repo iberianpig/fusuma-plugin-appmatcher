@@ -10,11 +10,15 @@ desc "bump version and generate CHANGELOG with the version"
 task :bump, :type do |_, args|
   require "bump"
   label = args[:type]
-  unless %w[major minor patch pre].include?(label)
-    raise "Usage: rake bump[LABEL] (LABEL: ['major', 'minor', 'patch', 'pre'])"
+  unless %w[major minor patch pre no].include?(label)
+    raise "Usage: rake bump[LABEL] (LABEL: ['major', 'minor', 'patch', 'pre', 'no'])"
   end
 
-  next_version = Bump::Bump.next_version(label)
+  next_version = if label == "no"
+    Bump::Bump.current
+  else
+    Bump::Bump.next_version(label)
+  end
 
   require "github_changelog_generator/task"
   GitHubChangelogGenerator::RakeTask.new :changelog do |config|
@@ -30,8 +34,14 @@ task :bump, :type do |_, args|
   puts "update CHANGELOG"
   `git add CHANGELOG.md`
 
-  puts "Bump version to #{label}"
-  Bump::Bump.run(label)
+  if label == "no"
+    puts "No bump version"
+    `git commit -m "update CHANGELOG"`
+  else
+    puts "Bump version to #{label}"
+    Bump::Bump.run(label)
+  end
+
   puts 'Next step: "bundle exec rake release_tag"'
 end
 

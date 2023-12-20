@@ -13,6 +13,10 @@ module Fusuma
             super()
             @name = name
           end
+
+          def to_s
+            @name
+          end
         end
       end
     end

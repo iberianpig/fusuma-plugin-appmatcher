@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.7.1](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.7.1) (2024-01-03)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.7.0...v0.7.1)
+
+**Fixed bugs:**
+
+- Gnome Extension is not support Gnome Shell version 43 and 44 [\#9](https://github.com/iberianpig/fusuma-plugin-appmatcher/issues/9)
+
+## [v0.7.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.7.0) (2023-12-25)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.6.1...v0.7.0)
+
 ## [v0.6.1](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.6.1) (2023-10-20)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.6.0...v0.6.1)

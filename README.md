@@ -38,7 +38,7 @@ Google-chrome
 Alacritty
 ```
 
-You can use these applicatin name to under `application:` context in config.yml
+You can use these application name to under `application:` context in config.yml
 
 ## Add appmatcher properties and application names to config.yml
 

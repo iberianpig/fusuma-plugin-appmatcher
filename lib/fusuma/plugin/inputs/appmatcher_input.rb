@@ -24,6 +24,7 @@ module Fusuma
           @backend.shutdown
         end
 
+        # TODO: use read_from_io
         # @param record [String] application name
         # @return [Event]
         def create_event(record:)

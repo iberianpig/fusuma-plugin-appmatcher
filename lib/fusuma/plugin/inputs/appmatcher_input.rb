@@ -7,20 +7,16 @@ module Fusuma
     module Inputs
       # Get active application's name
       class AppmatcherInput < Input
-        attr_reader :pid
-
         def io
-          @backend ||= Appmatcher.backend_klass.new
+          return @io if instance_variable_defined?(:@io)
 
-          @pid ||= begin
-            pid = @backend.watch_start
-            # NOTE: Closing the parent process's pipe
-            @backend.writer.close
+          @backend = Appmatcher.backend_klass.new
 
-            pid
-          end
+          @backend.watch_start
+          # NOTE: Closing the parent process's pipe
+          @backend.writer.close
 
-          @backend.reader
+          @io = @backend.reader
         end
 
         def shutdown

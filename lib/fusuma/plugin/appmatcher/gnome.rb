@@ -20,13 +20,10 @@ module Fusuma
         # fork process and watch signal
         # @return [Integer] Process id
         def watch_start
-          @watch_start ||= begin
-            pid = as_user(proctitle: self.class.name.underscore) do |user|
-              @reader.close
-              ENV["DBUS_SESSION_BUS_ADDRESS"] = "unix:path=/run/user/#{user.uid}/bus"
-              register_on_application_changed(Matcher.new)
-            end
-            pid
+          as_user(proctitle: self.class.name.underscore) do |user|
+            @reader.close
+            ENV["DBUS_SESSION_BUS_ADDRESS"] = "unix:path=/run/user/#{user.uid}/bus"
+            register_on_application_changed(Matcher.new)
           end
         end
 

@@ -22,12 +22,9 @@ module Fusuma
         # fork process and watch signal
         # @return [Integer] Process id
         def watch_start
-          @watch_start ||= begin
-            pid = as_user(proctitle: self.class.name.underscore) do
-              @reader.close
-              sleep # stop indefinitely without using CPU
-            end
-            pid
+          as_user(proctitle: self.class.name.underscore) do
+            @reader.close
+            sleep # stop indefinitely without using CPU
           end
         end
 

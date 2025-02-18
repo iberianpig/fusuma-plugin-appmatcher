@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.8.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.8.0) (2025-02-18)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.7.1...v0.8.0)
+
+**Merged pull requests:**
+
+- Improvement of Gnome Extension Detection Logic [\#15](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/15) ([iberianpig](https://github.com/iberianpig))
+
 ## [v0.7.1](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.7.1) (2024-01-03)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.7.0...v0.7.1)

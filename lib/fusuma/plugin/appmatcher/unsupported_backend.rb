@@ -29,9 +29,6 @@ module Fusuma
         end
 
         class Matcher
-          def initialize
-          end
-
           def running_applications
             warn
             nil

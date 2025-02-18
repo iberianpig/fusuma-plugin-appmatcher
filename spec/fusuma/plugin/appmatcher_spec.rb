@@ -22,18 +22,18 @@ module Fusuma
           context "when XDG_CURRENT_DESKTOP is ubuntu:GNOME" do
             before { allow(Appmatcher).to receive(:xdg_current_desktop).and_return("ubuntu:GNOME") }
 
-            context "when gnome-extension is installed" do
+            context "when gnome-extension is enabled" do
               before do
-                allow_any_instance_of(Appmatcher::GnomeExtensions::Installer).to receive(:installed?).and_return(true)
+                allow_any_instance_of(Appmatcher::GnomeExtensions::Installer).to receive(:enabled?).and_return(true)
               end
               it { is_expected.to eq Appmatcher::GnomeExtension }
             end
 
-            context "when gnome-extension is NOT installed" do
+            context "when gnome-extension is NOT enabled" do
               before do
-                allow_any_instance_of(Appmatcher::GnomeExtensions::Installer).to receive(:installed?).and_return(false)
+                allow_any_instance_of(Appmatcher::GnomeExtensions::Installer).to receive(:enabled?).and_return(false)
               end
-              it { is_expected.to eq Appmatcher::Gnome }
+              it { is_expected.to eq Appmatcher::UnsupportedBackend }
             end
           end
 

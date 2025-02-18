@@ -35,8 +35,8 @@ module Fusuma
           end
 
           def enabled?
-            enabled_extensions = `gsettings get org.gnome.shell enabled-extensions`.strip
-            enabled_extensions.include?(EXTENSION)
+            enabled_extensions = YAML.load(`gsettings get org.gnome.shell enabled-extensions`)
+            enabled_extensions&.include?(EXTENSION)
           end
 
           private

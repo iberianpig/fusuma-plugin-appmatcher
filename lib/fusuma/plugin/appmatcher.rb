@@ -3,7 +3,6 @@
 require "fusuma/plugin/appmatcher/version"
 
 require "fusuma/plugin/appmatcher/x11"
-require "fusuma/plugin/appmatcher/gnome"
 require "fusuma/plugin/appmatcher/gnome_extension"
 require "fusuma/plugin/appmatcher/gnome_extensions/installer"
 require "fusuma/plugin/appmatcher/unsupported_backend"
@@ -22,12 +21,19 @@ module Fusuma
         when /wayland/
           case xdg_current_desktop
           when /GNOME/
-            return GnomeExtension if GnomeExtensions::Installer.new.installed?
-
-            return Gnome
+            if GnomeExtensions::Installer.new.enabled?
+              return GnomeExtension
+            else
+              MultiLogger.warn "Appmatcher Gnome Shell Extension is NOT enabled"
+              MultiLogger.warn "Please enable it by running the following command:"
+              MultiLogger.warn ""
+              MultiLogger.warn "$ fusuma-appmatcher --install-gnome-extension"
+              MultiLogger.warn ""
+            end
           end
         end
 
+        MultiLogger.warn "appmatcher doesn't support"
         UnsupportedBackend
       end
 

@@ -3,7 +3,6 @@
 require "fusuma/plugin/appmatcher/version"
 
 require "fusuma/plugin/appmatcher/x11"
-require "fusuma/plugin/appmatcher/gnome"
 require "fusuma/plugin/appmatcher/gnome_extension"
 require "fusuma/plugin/appmatcher/gnome_extensions/installer"
 require "fusuma/plugin/appmatcher/unsupported_backend"

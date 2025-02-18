@@ -1,6 +1,5 @@
 /.bundle/
 /.yardoc
-/Gemfile.lock
 /_yardoc/
 /coverage/
 /doc/
@@ -13,4 +12,4 @@
 .ruby-version
 
 # direnv
-.envrc
+.direnv

@@ -20,7 +20,7 @@ module Fusuma
           return X11
         when /wayland/
           case xdg_current_desktop
-          when /GNOME|Unity/
+          when /GNOME/
             if GnomeExtensions::Installer.new.enabled?
               return GnomeExtension
             else

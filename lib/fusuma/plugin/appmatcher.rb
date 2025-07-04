@@ -42,7 +42,7 @@ module Fusuma
       end
 
       def xdg_current_desktop
-        ENV.fetch("XDG_CURRENT_DESKTOP", "")
+        ENV.fetch("ORIGINAL_XDG_CURRENT_DESKTOP", ENV.fetch("XDG_CURRENT_DESKTOP", ""))
       end
     end
   end

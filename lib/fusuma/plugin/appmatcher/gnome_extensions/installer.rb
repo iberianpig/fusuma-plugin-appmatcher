@@ -2,6 +2,7 @@
 
 require_relative "../user_switcher"
 require "fileutils"
+require "yaml"
 
 module Fusuma
   module Plugin

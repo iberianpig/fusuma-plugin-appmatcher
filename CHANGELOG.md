@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.9.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.9.0) (2025-07-08)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.8.0...v0.9.0)
+
+**Merged pull requests:**
+
+- fix: xdg\_current\_desktop value for VS Code terminals [\#17](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/17) ([ZacCat](https://github.com/ZacCat))
+- feat: add support for GNOME 46 [\#16](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/16) ([ZacCat](https://github.com/ZacCat))
+
 ## [v0.8.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.8.0) (2025-02-18)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.7.1...v0.8.0)

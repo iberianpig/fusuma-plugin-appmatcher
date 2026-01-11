@@ -5,6 +5,8 @@ require "fusuma/plugin/appmatcher/version"
 require "fusuma/plugin/appmatcher/x11"
 require "fusuma/plugin/appmatcher/gnome_extension"
 require "fusuma/plugin/appmatcher/gnome_extensions/installer"
+require "fusuma/plugin/appmatcher/kde_wayland"
+require "fusuma/plugin/appmatcher/kwin_scripts/installer"
 require "fusuma/plugin/appmatcher/unsupported_backend"
 
 module Fusuma
@@ -28,6 +30,16 @@ module Fusuma
               MultiLogger.warn "Please enable it by running the following command:"
               MultiLogger.warn ""
               MultiLogger.warn "$ fusuma-appmatcher --install-gnome-extension"
+              MultiLogger.warn ""
+            end
+          when /KDE/
+            if KwinScripts::Installer.new.enabled?
+              return KdeWayland
+            else
+              MultiLogger.warn "Appmatcher KWin Script is NOT enabled"
+              MultiLogger.warn "Please enable it by running the following command:"
+              MultiLogger.warn ""
+              MultiLogger.warn "$ fusuma-appmatcher --install-kde-script"
               MultiLogger.warn ""
             end
           end

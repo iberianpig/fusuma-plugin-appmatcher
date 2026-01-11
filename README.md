@@ -3,7 +3,7 @@
 [Fusuma](https://github.com/iberianpig/fusuma) plugin configure app-specific gestures
 
 * Switch gesture mappings by detecting active application.
-* Support X11, Ubuntu-Wayland
+* Support X11, GNOME-Wayland, KDE-Wayland
 
 
 ## Installation
@@ -26,6 +26,17 @@ $ fusuma-appmatcher --install-gnome-extension
 ```
 
 Restart your session(logout/login), then activate Appmatcher on gnome-extensions-app
+
+### Install Appmatcher KWin Script on KDE Wayland
+
+KDE Wayland also restricts access to window information.
+fusuma-plugin-appmatcher uses a KWin script to communicate with the plugin via DBus.
+
+```sh
+$ fusuma-appmatcher --install-kde-script
+```
+
+Restart your KDE session (logout/login) to activate the script
 
 ## List Running Application names
 

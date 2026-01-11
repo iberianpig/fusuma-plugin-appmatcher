@@ -1,0 +1,21 @@
+{
+    "KPlugin": {
+        "Id": "appmatcher-kde",
+        "Name": "Fusuma Appmatcher for KDE",
+        "Description": "Notifies active window changes to fusuma-plugin-appmatcher via DBus",
+        "Authors": [
+            {
+                "Name": "iberianpig",
+                "Email": "yhkyky@gmail.com"
+            }
+        ],
+        "Category": "Accessibility",
+        "License": "MIT",
+        "Version": "1.0.0",
+        "Website": "https://github.com/iberianpig/fusuma-plugin-appmatcher"
+    },
+    "KPackageStructure": "KWin/Script",
+    "X-Plasma-API": "javascript",
+    "X-Plasma-MainScript": "code/main.js",
+    "X-KDE-PluginKeyword": "appmatcher-kde"
+}

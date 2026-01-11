@@ -26,6 +26,16 @@ opt.on("--uninstall-gnome-extension",
   option[:uninstall_gnome_extension] = v
 end
 
+opt.on("--install-kde-script",
+  "Install KWin script for appmatcher") do |v|
+  option[:install_kde_script] = v
+end
+
+opt.on("--uninstall-kde-script",
+  "Uninstall KWin script for appmatcher") do |v|
+  option[:uninstall_kde_script] = v
+end
+
 opt.parse!(ARGV)
 
 if option[:install_gnome_extension]
@@ -37,6 +47,18 @@ end
 if option[:uninstall_gnome_extension]
   require_relative "../lib/fusuma/plugin/appmatcher/gnome_extensions/installer"
   Fusuma::Plugin::Appmatcher::GnomeExtensions::Installer.new.uninstall
+  return
+end
+
+if option[:install_kde_script]
+  require_relative "../lib/fusuma/plugin/appmatcher/kwin_scripts/installer"
+  Fusuma::Plugin::Appmatcher::KwinScripts::Installer.new.install
+  return
+end
+
+if option[:uninstall_kde_script]
+  require_relative "../lib/fusuma/plugin/appmatcher/kwin_scripts/installer"
+  Fusuma::Plugin::Appmatcher::KwinScripts::Installer.new.uninstall
   return
 end
 

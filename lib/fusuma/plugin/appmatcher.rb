@@ -6,6 +6,7 @@ require "fusuma/plugin/appmatcher/x11"
 require "fusuma/plugin/appmatcher/gnome_extension"
 require "fusuma/plugin/appmatcher/gnome_extensions/installer"
 require "fusuma/plugin/appmatcher/hyprland"
+require "fusuma/plugin/appmatcher/sway"
 require "fusuma/plugin/appmatcher/unsupported_backend"
 
 module Fusuma
@@ -33,6 +34,13 @@ module Fusuma
             end
           when /Hyprland/i
             return Hyprland if hyprland_available?
+          when /sway/i
+            if Sway.available?
+              return Sway
+            else
+              MultiLogger.warn "swaymsg command not found"
+              MultiLogger.warn "Please install sway to use appmatcher with Sway"
+            end
           end
         end
 

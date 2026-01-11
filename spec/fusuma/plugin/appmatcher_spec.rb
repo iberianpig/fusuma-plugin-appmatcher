@@ -37,6 +37,32 @@ module Fusuma
             end
           end
 
+          context "when XDG_CURRENT_DESKTOP is sway" do
+            before { allow(Appmatcher).to receive(:xdg_current_desktop).and_return("sway") }
+
+            context "when swaymsg is available" do
+              before do
+                allow(Appmatcher::Sway).to receive(:available?).and_return(true)
+              end
+              it { is_expected.to eq Appmatcher::Sway }
+            end
+
+            context "when swaymsg is NOT available" do
+              before do
+                allow(Appmatcher::Sway).to receive(:available?).and_return(false)
+              end
+              it { is_expected.to eq Appmatcher::UnsupportedBackend }
+            end
+          end
+
+          context "when XDG_CURRENT_DESKTOP is Sway (capitalized)" do
+            before do
+              allow(Appmatcher).to receive(:xdg_current_desktop).and_return("Sway")
+              allow(Appmatcher::Sway).to receive(:available?).and_return(true)
+            end
+            it { is_expected.to eq Appmatcher::Sway }
+          end
+
           context "when XDG_CURRENT_DESKTOP is UNKNOWN" do
             before do
               allow(Appmatcher).to receive(:xdg_current_desktop).and_return("UNKNOWN")

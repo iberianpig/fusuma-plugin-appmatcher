@@ -44,6 +44,68 @@ module Fusuma
             end
             it { is_expected.to eq Appmatcher::UnsupportedBackend }
           end
+
+          context "when XDG_CURRENT_DESKTOP is Hyprland" do
+            before { allow(Appmatcher).to receive(:xdg_current_desktop).and_return("Hyprland") }
+
+            context "when Hyprland socket is available" do
+              before do
+                allow(Appmatcher).to receive(:hyprland_available?).and_return(true)
+              end
+              it { is_expected.to eq Appmatcher::Hyprland }
+            end
+
+            context "when Hyprland socket is NOT available" do
+              before do
+                allow(Appmatcher).to receive(:hyprland_available?).and_return(false)
+              end
+              it { is_expected.to eq Appmatcher::UnsupportedBackend }
+            end
+          end
+        end
+      end
+
+      describe ".hyprland_available?" do
+        subject { Appmatcher.hyprland_available? }
+
+        context "when HYPRLAND_INSTANCE_SIGNATURE is not set" do
+          before do
+            allow(ENV).to receive(:[]).and_call_original
+            allow(ENV).to receive(:[]).with("HYPRLAND_INSTANCE_SIGNATURE").and_return(nil)
+          end
+          it { is_expected.to be false }
+        end
+
+        context "when HYPRLAND_INSTANCE_SIGNATURE is set" do
+          before do
+            allow(ENV).to receive(:[]).and_call_original
+            allow(ENV).to receive(:[]).with("HYPRLAND_INSTANCE_SIGNATURE").and_return("test_instance")
+            allow(ENV).to receive(:fetch).and_call_original
+            allow(ENV).to receive(:fetch).with("XDG_RUNTIME_DIR", "/tmp").and_return("/run/user/1000")
+          end
+
+          context "when socket file exists" do
+            before do
+              allow(File).to receive(:exist?).and_call_original
+              allow(File).to receive(:exist?)
+                .with("/run/user/1000/hypr/test_instance/.socket2.sock")
+                .and_return(true)
+            end
+            it { is_expected.to be true }
+          end
+
+          context "when socket file does not exist" do
+            before do
+              allow(File).to receive(:exist?).and_call_original
+              allow(File).to receive(:exist?)
+                .with("/run/user/1000/hypr/test_instance/.socket2.sock")
+                .and_return(false)
+              allow(File).to receive(:exist?)
+                .with("/tmp/hypr/test_instance/.socket2.sock")
+                .and_return(false)
+            end
+            it { is_expected.to be false }
+          end
         end
       end
     end

@@ -1,10 +1,18 @@
 # Changelog
 
+## [v0.11.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.11.0) (2026-01-20)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.10.0...v0.11.0)
+
+**Implemented enhancements:**
+
+- Add Hyprland Wayland Compositor support [\#19](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/19) ([iberianpig](https://github.com/iberianpig))
+
 ## [v0.10.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.10.0) (2026-01-20)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.9.0...v0.10.0)
 
-**Merged pull requests:**
+**Implemented enhancements:**
 
 - Add layer switching integration with fusuma-plugin-remap [\#18](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/18) ([iberianpig](https://github.com/iberianpig))
 

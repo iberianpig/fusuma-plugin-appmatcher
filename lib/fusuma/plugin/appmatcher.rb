@@ -5,6 +5,7 @@ require "fusuma/plugin/appmatcher/version"
 require "fusuma/plugin/appmatcher/x11"
 require "fusuma/plugin/appmatcher/gnome_extension"
 require "fusuma/plugin/appmatcher/gnome_extensions/installer"
+require "fusuma/plugin/appmatcher/hyprland"
 require "fusuma/plugin/appmatcher/unsupported_backend"
 
 module Fusuma
@@ -30,6 +31,8 @@ module Fusuma
               MultiLogger.warn "$ fusuma-appmatcher --install-gnome-extension"
               MultiLogger.warn ""
             end
+          when /Hyprland/i
+            return Hyprland if hyprland_available?
           end
         end
 
@@ -43,6 +46,17 @@ module Fusuma
 
       def xdg_current_desktop
         ENV.fetch("ORIGINAL_XDG_CURRENT_DESKTOP", ENV.fetch("XDG_CURRENT_DESKTOP", ""))
+      end
+
+      def hyprland_available?
+        instance_sig = ENV["HYPRLAND_INSTANCE_SIGNATURE"]
+        return false unless instance_sig
+
+        xdg_runtime = ENV.fetch("XDG_RUNTIME_DIR", "/tmp")
+        [
+          File.join(xdg_runtime, "hypr", instance_sig, ".socket2.sock"),
+          File.join("/tmp", "hypr", instance_sig, ".socket2.sock")
+        ].any? { |p| File.exist?(p) }
       end
     end
   end

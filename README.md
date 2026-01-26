@@ -3,7 +3,7 @@
 [Fusuma](https://github.com/iberianpig/fusuma) plugin configure app-specific gestures
 
 * Switch gesture mappings by detecting active application.
-* Support X11, Ubuntu-Wayland
+* Support X11, GNOME Wayland, Hyprland
 
 
 ## Installation
@@ -97,9 +97,70 @@ swipe:
       sendkey: 'LEFTSHIFT+LEFTCTRL+W'
 ```
 
+## Multiple Applications (OR condition)
+
+**Requires fusuma v3.12.0 or later**
+
+You can specify multiple applications using array format. The gesture will be triggered when **any** of the listed applications is active.
+
+```yaml
+---
+context:
+  application:
+    - Google-chrome
+    - Firefox
+swipe:
+  3:
+    left:
+      sendkey: 'LEFTALT+RIGHT'
+    right:
+      sendkey: 'LEFTALT+LEFT'
+    up:
+      sendkey: 'LEFTCTRL+T'
+    down:
+      sendkey: 'LEFTCTRL+W'
+```
+
+## Combining with Other Context Plugins (AND condition)
+
+**Requires fusuma v3.12.0 or later**
+
+You can combine `application` with other context conditions. When multiple keys are specified under `context:`, **all** conditions must be satisfied (AND logic).
+
+For example, with [fusuma-plugin-thumbsense](https://github.com/iberianpig/fusuma-plugin-thumbsense):
+
+```yaml
+---
+context:
+  thumbsense: true
+  application:
+    - Alacritty
+    - Gnome-terminal
+swipe:
+  3:
+    up:
+      sendkey: 'LEFTSHIFT+LEFTCTRL+T'
+    down:
+      sendkey: 'LEFTSHIFT+LEFTCTRL+W'
+```
+
+In this example, the gesture is only triggered when:
+1. Thumbsense mode is active (finger is touching the touchpad)
+2. AND the active application is either Alacritty or Gnome-terminal
+
+This AND logic works with any context plugin that provides context conditions
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/iberianpig/fusuma-plugin-appmatcher. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
+### Help Wanted: Support for Other Wayland Compositors
+
+Currently, this plugin supports X11, GNOME Wayland, and Hyprland. We'd love to expand support to other Wayland compositors (Sway, KDE Plasma, wlroots-based compositors, etc.).
+
+If you're using an unsupported compositor:
+- Please [open an issue](https://github.com/iberianpig/fusuma-plugin-appmatcher/issues) to let us know
+- Help with testing and feedback is greatly appreciated
 
 ## License
 

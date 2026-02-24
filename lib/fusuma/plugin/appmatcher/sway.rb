@@ -37,6 +37,8 @@ module Fusuma
         private
 
         def register_on_application_changed(matcher)
+          @writer.puts(matcher.active_application || "NOT FOUND")
+
           matcher.on_active_application_changed do |name|
             notify(name)
           end

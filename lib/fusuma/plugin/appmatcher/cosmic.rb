@@ -29,6 +29,29 @@ module Fusuma
           @reader, @writer = IO.pipe
         end
 
+        def watch_start
+          as_user(proctitle: self.class.name.underscore) do |_user|
+            @reader.close
+            register_on_application_changed(Matcher.new)
+          end
+        end
+
+        private
+
+        def register_on_application_changed(matcher)
+          @writer.puts(matcher.active_application || "NOT FOUND")
+          matcher.on_active_application_changed { |name| notify(name) }
+        end
+
+        def notify(name)
+          @writer.puts(name)
+        rescue Errno::EPIPE
+          exit 0
+        rescue => e
+          MultiLogger.error e.message
+          exit 1
+        end
+
         class Matcher
           # @return [String, nil]
           def active_application

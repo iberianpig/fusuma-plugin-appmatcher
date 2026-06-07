@@ -241,6 +241,39 @@ module Fusuma
             end
           end
         end
+
+        describe "#notify and registration flow" do
+          let(:cosmic) { described_class.new }
+
+          it "writes initial active_application to writer" do
+            matcher = instance_double(Cosmic::Matcher)
+            allow(matcher).to receive(:active_application).and_return("firefox")
+            allow(matcher).to receive(:on_active_application_changed)
+
+            cosmic.send(:register_on_application_changed, matcher)
+            cosmic.writer.close
+            expect(cosmic.reader.read).to eq("firefox\n")
+          end
+
+          it "writes NOT FOUND when active_application is nil" do
+            matcher = instance_double(Cosmic::Matcher)
+            allow(matcher).to receive(:active_application).and_return(nil)
+            allow(matcher).to receive(:on_active_application_changed)
+
+            cosmic.send(:register_on_application_changed, matcher)
+            cosmic.writer.close
+            expect(cosmic.reader.read).to eq("NOT FOUND\n")
+          end
+
+          it "exits with 0 on Errno::EPIPE in notify" do
+            # Close reader only — writer.puts then raises Errno::EPIPE
+            # (closing the writer would raise IOError: closed stream instead).
+            cosmic.reader.close
+            expect { cosmic.send(:notify, "firefox") }.to raise_error(SystemExit) { |e|
+              expect(e.status).to eq(0)
+            }
+          end
+        end
       end
     end
   end

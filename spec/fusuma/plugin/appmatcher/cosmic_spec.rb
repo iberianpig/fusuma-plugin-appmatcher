@@ -116,6 +116,40 @@ module Fusuma
               end
             end
           end
+
+          describe "#running_applications" do
+            context "when apps are present" do
+              before do
+                stub_info(stdout: {
+                  "apps" => [
+                    {"app_id" => "firefox", "state" => []},
+                    {"app_id" => "kitty", "state" => ["activated"]},
+                    {"app_id" => "firefox", "state" => ["maximized"]}
+                  ]
+                }.to_json)
+              end
+
+              it "returns unique app_ids" do
+                expect(matcher.running_applications).to contain_exactly("firefox", "kitty")
+              end
+            end
+
+            context "when info fetch fails" do
+              before { stub_info(stdout: "", success: false) }
+
+              it "returns empty array" do
+                expect(matcher.running_applications).to eq([])
+              end
+            end
+
+            context "when apps array is missing" do
+              before { stub_info(stdout: "{}") }
+
+              it "returns empty array" do
+                expect(matcher.running_applications).to eq([])
+              end
+            end
+          end
         end
       end
     end

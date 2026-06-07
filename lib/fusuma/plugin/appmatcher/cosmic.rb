@@ -36,6 +36,13 @@ module Fusuma
             extract_activated_app_id(state)
           end
 
+          # @return [Array<String>]
+          def running_applications
+            state = fetch_info
+            return [] unless state
+            (state["apps"] || []).map { |a| a["app_id"] }.compact.uniq
+          end
+
           private
 
           # @return [Hash, nil]

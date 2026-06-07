@@ -6,6 +6,7 @@ require "fusuma/plugin/appmatcher/x11"
 require "fusuma/plugin/appmatcher/gnome_extension"
 require "fusuma/plugin/appmatcher/gnome_extensions/installer"
 require "fusuma/plugin/appmatcher/hyprland"
+require "fusuma/plugin/appmatcher/cosmic"
 require "fusuma/plugin/appmatcher/unsupported_backend"
 
 module Fusuma
@@ -33,6 +34,16 @@ module Fusuma
             end
           when /Hyprland/i
             return Hyprland if hyprland_available?
+          when /COSMIC/i
+            if Cosmic.available?
+              return Cosmic
+            else
+              MultiLogger.warn "cos-cli command not found"
+              MultiLogger.warn "Please install cos-cli to use appmatcher with COSMIC desktop:"
+              MultiLogger.warn ""
+              MultiLogger.warn "  $ cargo install --git https://github.com/estin/cos-cli"
+              MultiLogger.warn ""
+            end
           end
         end
 

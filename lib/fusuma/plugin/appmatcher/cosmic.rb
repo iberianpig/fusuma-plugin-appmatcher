@@ -28,6 +28,34 @@ module Fusuma
         def initialize
           @reader, @writer = IO.pipe
         end
+
+        class Matcher
+          # @return [String, nil]
+          def active_application
+            state = fetch_info
+            extract_activated_app_id(state)
+          end
+
+          private
+
+          # @return [Hash, nil]
+          def fetch_info
+            stdout, _stderr, status = Open3.capture3("cos-cli", "info", "--json")
+            return nil unless status.success? && !stdout.empty?
+            JSON.parse(stdout)
+          rescue JSON::ParserError, Errno::ENOENT
+            nil
+          end
+
+          # @param state [Hash, nil]
+          # @return [String, nil]
+          def extract_activated_app_id(state)
+            return nil unless state
+            apps = state["apps"] || []
+            focused = apps.find { |a| (a["state"] || []).include?("activated") }
+            focused && focused["app_id"]
+          end
+        end
       end
     end
   end

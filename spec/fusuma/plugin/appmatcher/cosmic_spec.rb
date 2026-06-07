@@ -55,6 +55,68 @@ module Fusuma
             expect(cosmic.writer).to be_a(IO)
           end
         end
+
+        describe Cosmic::Matcher do
+          let(:matcher) { described_class.new }
+
+          # Stub Open3.capture3 with a JSON output for `cos-cli info --json`
+          def stub_info(stdout:, success: true)
+            status = instance_double(Process::Status, success?: success)
+            allow(Open3).to receive(:capture3).with("cos-cli", "info", "--json")
+              .and_return([stdout, "", status])
+          end
+
+          describe "#active_application" do
+            context "when an app has activated state" do
+              before do
+                stub_info(stdout: {
+                  "apps" => [
+                    {"app_id" => "firefox", "state" => []},
+                    {"app_id" => "org.wezfurlong.wezterm", "state" => ["activated"]}
+                  ]
+                }.to_json)
+              end
+
+              it "returns the activated app_id" do
+                expect(matcher.active_application).to eq("org.wezfurlong.wezterm")
+              end
+            end
+
+            context "when no app is activated" do
+              before do
+                stub_info(stdout: {"apps" => [{"app_id" => "firefox", "state" => []}]}.to_json)
+              end
+
+              it "returns nil" do
+                expect(matcher.active_application).to be_nil
+              end
+            end
+
+            context "when cos-cli info exits non-zero" do
+              before { stub_info(stdout: "", success: false) }
+
+              it "returns nil" do
+                expect(matcher.active_application).to be_nil
+              end
+            end
+
+            context "when output is empty" do
+              before { stub_info(stdout: "") }
+
+              it "returns nil" do
+                expect(matcher.active_application).to be_nil
+              end
+            end
+
+            context "when JSON is invalid" do
+              before { stub_info(stdout: "not json") }
+
+              it "returns nil" do
+                expect(matcher.active_application).to be_nil
+              end
+            end
+          end
+        end
       end
     end
   end

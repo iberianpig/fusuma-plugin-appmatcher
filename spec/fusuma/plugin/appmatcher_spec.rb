@@ -62,6 +62,25 @@ module Fusuma
               it { is_expected.to eq Appmatcher::UnsupportedBackend }
             end
           end
+
+          context "when XDG_CURRENT_DESKTOP is COSMIC" do
+            before { allow(Appmatcher).to receive(:xdg_current_desktop).and_return("COSMIC") }
+
+            context "when cos-cli is available" do
+              before do
+                allow(Appmatcher::Cosmic).to receive(:available?).and_return(true)
+              end
+              it { is_expected.to eq Appmatcher::Cosmic }
+            end
+
+            context "when cos-cli is NOT available" do
+              before do
+                allow(Appmatcher::Cosmic).to receive(:available?).and_return(false)
+                allow(MultiLogger).to receive(:warn)
+              end
+              it { is_expected.to eq Appmatcher::UnsupportedBackend }
+            end
+          end
         end
       end
 

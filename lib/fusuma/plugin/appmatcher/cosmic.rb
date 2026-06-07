@@ -43,6 +43,25 @@ module Fusuma
             (state["apps"] || []).map { |a| a["app_id"] }.compact.uniq
           end
 
+          # Sentinel value distinct from nil, so the first iteration always
+          # yields (otherwise initial nil == nil would skip yielding NOT FOUND).
+          UNSET = Object.new.freeze
+          private_constant :UNSET
+
+          def on_active_application_changed
+            last = UNSET
+            subscribe_state_change do |state|
+              app_id = extract_activated_app_id(state)
+              next if app_id == last
+              last = app_id
+              yield(app_id || "NOT FOUND")
+            end
+          rescue => e
+            MultiLogger.error "Cosmic subscription error: #{e.message}"
+            sleep 1
+            retry
+          end
+
           private
 
           # @return [Hash, nil]
@@ -61,6 +80,24 @@ module Fusuma
             apps = state["apps"] || []
             focused = apps.find { |a| (a["state"] || []).include?("activated") }
             focused && focused["app_id"]
+          end
+
+          def subscribe_state_change
+            Open3.popen3("cos-cli", "serve") do |stdin, stdout, stderr, _wait_thr|
+              stdin.close
+              stdout.each_line do |line|
+                msg = JSON.parse(line)
+                next unless msg["method"] == "state_change"
+                state = msg.dig("params", "state")
+                yield state if state
+              rescue JSON::ParserError => e
+                MultiLogger.warn "Failed to parse cos-cli message: #{e.message}"
+              end
+              MultiLogger.error stderr.read if stdout.eof?
+            end
+          rescue Errno::ENOENT
+            MultiLogger.error "cos-cli command not found. Install with: cargo install --git https://github.com/estin/cos-cli"
+            raise
           end
         end
       end

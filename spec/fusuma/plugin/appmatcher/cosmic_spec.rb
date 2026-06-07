@@ -150,6 +150,96 @@ module Fusuma
               end
             end
           end
+
+          describe "#on_active_application_changed" do
+            # Build a JSON-RPC state_change notification line
+            def notification(app_id, state: ["activated"])
+              {
+                "jsonrpc" => "2.0",
+                "method" => "state_change",
+                "params" => {
+                  "state" => {
+                    "apps" => app_id ? [{"app_id" => app_id, "state" => state}] : []
+                  }
+                }
+              }.to_json + "\n"
+            end
+
+            # Stub Open3.popen3 to feed the given lines as cos-cli serve stdout.
+            def stub_serve(lines)
+              stdout = StringIO.new(lines.join)
+              stderr = StringIO.new("")
+              stdin = StringIO.new
+              wait_thr = double("wait_thr")
+              allow(Open3).to receive(:popen3).with("cos-cli", "serve")
+                .and_yield(stdin, stdout, stderr, wait_thr)
+            end
+
+            # When the stubbed stdout StringIO is exhausted, `subscribe_state_change`
+            # returns normally (no exception). `on_active_application_changed` then
+            # exits without entering its `rescue => e; sleep 1; retry` branch.
+            # So happy-path tests just verify `yielded` content after normal return.
+
+            it "yields activated app_id on state_change" do
+              stub_serve([notification("firefox")])
+              yielded = []
+              matcher.on_active_application_changed { |name| yielded << name }
+              expect(yielded).to eq(["firefox"])
+            end
+
+            it "ignores non state_change methods" do
+              other = {"jsonrpc" => "2.0", "method" => "other", "params" => {}}.to_json + "\n"
+              stub_serve([other, notification("kitty")])
+              yielded = []
+              matcher.on_active_application_changed { |name| yielded << name }
+              expect(yielded).to eq(["kitty"])
+            end
+
+            it "skips consecutive duplicate app_ids" do
+              stub_serve([
+                notification("firefox"),
+                notification("firefox"),
+                notification("kitty")
+              ])
+              yielded = []
+              matcher.on_active_application_changed { |name| yielded << name }
+              expect(yielded).to eq(["firefox", "kitty"])
+            end
+
+            it "yields NOT FOUND once when no app is activated" do
+              stub_serve([notification(nil), notification(nil)])
+              yielded = []
+              matcher.on_active_application_changed { |name| yielded << name }
+              expect(yielded).to eq(["NOT FOUND"])
+            end
+
+            it "skips invalid JSON lines" do
+              stub_serve(["not json\n", notification("kitty")])
+              allow(Fusuma::MultiLogger).to receive(:warn)
+              yielded = []
+              matcher.on_active_application_changed { |name| yielded << name }
+              expect(yielded).to eq(["kitty"])
+              expect(Fusuma::MultiLogger).to have_received(:warn).with(/Failed to parse/)
+            end
+
+            # ENOENT path DOES exercise the rescue/retry branch in
+            # on_active_application_changed (subscribe_state_change re-raises).
+            # Use sleep stub to break out of the otherwise infinite retry loop.
+            it "logs and retries when cos-cli serve is missing" do
+              allow(Open3).to receive(:popen3).with("cos-cli", "serve")
+                .and_raise(Errno::ENOENT)
+              allow(Fusuma::MultiLogger).to receive(:error)
+              # SystemExit is not caught by `rescue => e` (StandardError only),
+              # so it propagates out of the retry loop.
+              allow(matcher).to receive(:sleep).and_raise(SystemExit)
+
+              expect {
+                matcher.on_active_application_changed { |_| }
+              }.to raise_error(SystemExit)
+
+              expect(Fusuma::MultiLogger).to have_received(:error).with(/cos-cli command not found/)
+            end
+          end
         end
       end
     end

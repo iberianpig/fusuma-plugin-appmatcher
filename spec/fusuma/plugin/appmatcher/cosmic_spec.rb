@@ -193,23 +193,25 @@ module Fusuma
               allow(matcher).to receive(:sleep).and_raise(SystemExit)
             end
 
-            it "yields activated app_id on state_change" do
-              stub_serve([notification("firefox")])
+            # Runs the subscription until the stubbed serve output is exhausted
+            # (then the sleep stub raises SystemExit) and returns yielded names.
+            def watch_until_exit
               yielded = []
               expect {
                 matcher.on_active_application_changed { |name| yielded << name }
               }.to raise_error(SystemExit)
-              expect(yielded).to eq(["firefox"])
+              yielded
+            end
+
+            it "yields activated app_id on state_change" do
+              stub_serve([notification("firefox")])
+              expect(watch_until_exit).to eq(["firefox"])
             end
 
             it "ignores non state_change methods" do
               other = {"jsonrpc" => "2.0", "method" => "other", "params" => {}}.to_json + "\n"
               stub_serve([other, notification("kitty")])
-              yielded = []
-              expect {
-                matcher.on_active_application_changed { |name| yielded << name }
-              }.to raise_error(SystemExit)
-              expect(yielded).to eq(["kitty"])
+              expect(watch_until_exit).to eq(["kitty"])
             end
 
             it "skips consecutive duplicate app_ids" do
@@ -218,30 +220,18 @@ module Fusuma
                 notification("firefox"),
                 notification("kitty")
               ])
-              yielded = []
-              expect {
-                matcher.on_active_application_changed { |name| yielded << name }
-              }.to raise_error(SystemExit)
-              expect(yielded).to eq(["firefox", "kitty"])
+              expect(watch_until_exit).to eq(["firefox", "kitty"])
             end
 
             it "yields NOT FOUND once when no app is activated" do
               stub_serve([notification(nil), notification(nil)])
-              yielded = []
-              expect {
-                matcher.on_active_application_changed { |name| yielded << name }
-              }.to raise_error(SystemExit)
-              expect(yielded).to eq(["NOT FOUND"])
+              expect(watch_until_exit).to eq(["NOT FOUND"])
             end
 
             it "skips invalid JSON lines" do
               stub_serve(["not json\n", notification("kitty")])
               allow(Fusuma::MultiLogger).to receive(:warn)
-              yielded = []
-              expect {
-                matcher.on_active_application_changed { |name| yielded << name }
-              }.to raise_error(SystemExit)
-              expect(yielded).to eq(["kitty"])
+              expect(watch_until_exit).to eq(["kitty"])
               expect(Fusuma::MultiLogger).to have_received(:warn).with(/Failed to parse/)
             end
 
@@ -249,9 +239,7 @@ module Fusuma
               # cos-cli serve treats stdin EOF as a shutdown signal, so the
               # subscriber must NOT close stdin (closing it kills serve).
               stdin = stub_serve([notification("firefox")])
-              expect {
-                matcher.on_active_application_changed { |_| }
-              }.to raise_error(SystemExit)
+              watch_until_exit
               expect(stdin).not_to be_closed
             end
 
@@ -259,9 +247,7 @@ module Fusuma
               # A clean serve exit (stdout EOF, no exception) must not stop the
               # watcher silently; it raises and enters the retry loop.
               stub_serve([])
-              expect {
-                matcher.on_active_application_changed { |_| }
-              }.to raise_error(SystemExit)
+              watch_until_exit
               expect(Fusuma::MultiLogger).to have_received(:error).with(/cos-cli serve exited/)
             end
 
@@ -269,9 +255,7 @@ module Fusuma
               allow(Open3).to receive(:popen3).with("cos-cli", "serve")
                 .and_raise(Errno::ENOENT)
 
-              expect {
-                matcher.on_active_application_changed { |_| }
-              }.to raise_error(SystemExit)
+              watch_until_exit
 
               expect(Fusuma::MultiLogger).to have_received(:error).with(/cos-cli command not found/)
             end

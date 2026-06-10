@@ -57,8 +57,7 @@ module Fusuma
         class Matcher
           # @return [String, nil]
           def active_application
-            state = fetch_info
-            extract_activated_app_id(state)
+            extract_activated_app_id(fetch_info)
           end
 
           # @return [Array<String>]

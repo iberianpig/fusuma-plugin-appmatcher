@@ -106,8 +106,9 @@ module Fusuma
           end
 
           def subscribe_state_change
-            Open3.popen3("cos-cli", "serve") do |stdin, stdout, stderr, _wait_thr|
-              stdin.close
+            # cos-cli serve is a stdio JSON-RPC server and exits on stdin EOF,
+            # so keep stdin open while reading notifications.
+            Open3.popen3("cos-cli", "serve") do |_stdin, stdout, stderr, _wait_thr|
               stdout.each_line do |line|
                 msg = JSON.parse(line)
                 next unless msg["method"] == "state_change"
@@ -116,7 +117,9 @@ module Fusuma
               rescue JSON::ParserError => e
                 MultiLogger.warn "Failed to parse cos-cli message: #{e.message}"
               end
-              MultiLogger.error stderr.read if stdout.eof?
+              # A clean serve exit must not stop the watcher silently:
+              # raise so on_active_application_changed resubscribes via retry.
+              raise "cos-cli serve exited: #{stderr.read}"
             end
           rescue Errno::ENOENT
             MultiLogger.error "cos-cli command not found. Install with: cargo install --git https://github.com/estin/cos-cli"

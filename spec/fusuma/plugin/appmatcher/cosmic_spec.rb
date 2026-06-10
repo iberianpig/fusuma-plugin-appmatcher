@@ -166,6 +166,7 @@ module Fusuma
             end
 
             # Stub Open3.popen3 to feed the given lines as cos-cli serve stdout.
+            # Returns the stdin StringIO so tests can assert it is kept open.
             def stub_serve(lines)
               stdout = StringIO.new(lines.join)
               stderr = StringIO.new("")
@@ -173,17 +174,26 @@ module Fusuma
               wait_thr = double("wait_thr")
               allow(Open3).to receive(:popen3).with("cos-cli", "serve")
                 .and_yield(stdin, stdout, stderr, wait_thr)
+              stdin
             end
 
-            # When the stubbed stdout StringIO is exhausted, `subscribe_state_change`
-            # returns normally (no exception). `on_active_application_changed` then
-            # exits without entering its `rescue => e; sleep 1; retry` branch.
-            # So happy-path tests just verify `yielded` content after normal return.
+            # cos-cli serve is a stdio JSON-RPC server: it exits on stdin EOF,
+            # and a clean serve exit raises so on_active_application_changed
+            # resubscribes via its `rescue => e; sleep 1; retry` loop.
+            # The sleep stub raises SystemExit to break out of that infinite
+            # retry loop in tests (SystemExit is not a StandardError, so
+            # `rescue => e` does not catch it).
+            before do
+              allow(Fusuma::MultiLogger).to receive(:error)
+              allow(matcher).to receive(:sleep).and_raise(SystemExit)
+            end
 
             it "yields activated app_id on state_change" do
               stub_serve([notification("firefox")])
               yielded = []
-              matcher.on_active_application_changed { |name| yielded << name }
+              expect {
+                matcher.on_active_application_changed { |name| yielded << name }
+              }.to raise_error(SystemExit)
               expect(yielded).to eq(["firefox"])
             end
 
@@ -191,7 +201,9 @@ module Fusuma
               other = {"jsonrpc" => "2.0", "method" => "other", "params" => {}}.to_json + "\n"
               stub_serve([other, notification("kitty")])
               yielded = []
-              matcher.on_active_application_changed { |name| yielded << name }
+              expect {
+                matcher.on_active_application_changed { |name| yielded << name }
+              }.to raise_error(SystemExit)
               expect(yielded).to eq(["kitty"])
             end
 
@@ -202,14 +214,18 @@ module Fusuma
                 notification("kitty")
               ])
               yielded = []
-              matcher.on_active_application_changed { |name| yielded << name }
+              expect {
+                matcher.on_active_application_changed { |name| yielded << name }
+              }.to raise_error(SystemExit)
               expect(yielded).to eq(["firefox", "kitty"])
             end
 
             it "yields NOT FOUND once when no app is activated" do
               stub_serve([notification(nil), notification(nil)])
               yielded = []
-              matcher.on_active_application_changed { |name| yielded << name }
+              expect {
+                matcher.on_active_application_changed { |name| yielded << name }
+              }.to raise_error(SystemExit)
               expect(yielded).to eq(["NOT FOUND"])
             end
 
@@ -217,21 +233,36 @@ module Fusuma
               stub_serve(["not json\n", notification("kitty")])
               allow(Fusuma::MultiLogger).to receive(:warn)
               yielded = []
-              matcher.on_active_application_changed { |name| yielded << name }
+              expect {
+                matcher.on_active_application_changed { |name| yielded << name }
+              }.to raise_error(SystemExit)
               expect(yielded).to eq(["kitty"])
               expect(Fusuma::MultiLogger).to have_received(:warn).with(/Failed to parse/)
             end
 
-            # ENOENT path DOES exercise the rescue/retry branch in
-            # on_active_application_changed (subscribe_state_change re-raises).
-            # Use sleep stub to break out of the otherwise infinite retry loop.
+            it "keeps stdin open while subscribed" do
+              # cos-cli serve treats stdin EOF as a shutdown signal, so the
+              # subscriber must NOT close stdin (closing it kills serve).
+              stdin = stub_serve([notification("firefox")])
+              expect {
+                matcher.on_active_application_changed { |_| }
+              }.to raise_error(SystemExit)
+              expect(stdin).not_to be_closed
+            end
+
+            it "retries when cos-cli serve exits cleanly" do
+              # A clean serve exit (stdout EOF, no exception) must not stop the
+              # watcher silently; it raises and enters the retry loop.
+              stub_serve([])
+              expect {
+                matcher.on_active_application_changed { |_| }
+              }.to raise_error(SystemExit)
+              expect(Fusuma::MultiLogger).to have_received(:error).with(/cos-cli serve exited/)
+            end
+
             it "logs and retries when cos-cli serve is missing" do
               allow(Open3).to receive(:popen3).with("cos-cli", "serve")
                 .and_raise(Errno::ENOENT)
-              allow(Fusuma::MultiLogger).to receive(:error)
-              # SystemExit is not caught by `rescue => e` (StandardError only),
-              # so it propagates out of the retry loop.
-              allow(matcher).to receive(:sleep).and_raise(SystemExit)
 
               expect {
                 matcher.on_active_application_changed { |_| }

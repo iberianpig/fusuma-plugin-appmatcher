@@ -17,12 +17,14 @@ module Fusuma
 
         attr_reader :reader, :writer
 
+        # Search PATH in pure Ruby: the external `which` command is not
+        # installed on minimal systems (e.g. Arch containers).
         # @return [Boolean]
         def self.available?
-          stdout, _stderr, status = Open3.capture3("which", "cos-cli")
-          status.success? && !stdout.strip.empty?
-        rescue Errno::ENOENT
-          false
+          ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).any? do |dir|
+            path = File.join(dir, "cos-cli")
+            File.executable?(path) && !File.directory?(path)
+          end
         end
 
         def initialize

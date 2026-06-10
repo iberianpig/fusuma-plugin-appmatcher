@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "tmpdir"
 require "fusuma/plugin/appmatcher/cosmic"
 
 module Fusuma
@@ -8,38 +9,42 @@ module Fusuma
     module Appmatcher
       RSpec.describe Cosmic do
         describe ".available?" do
+          # available? searches PATH in pure Ruby (no external `which`,
+          # which is not installed on minimal systems like Arch containers).
           context "when cos-cli is found in PATH" do
-            before do
-              status = instance_double(Process::Status, success?: true)
-              allow(Open3).to receive(:capture3).with("which", "cos-cli")
-                .and_return(["/usr/local/bin/cos-cli\n", "", status])
-            end
-
             it "returns true" do
-              expect(described_class.available?).to be true
+              Dir.mktmpdir do |dir|
+                exe = File.join(dir, "cos-cli")
+                File.write(exe, "")
+                File.chmod(0o755, exe)
+                allow(ENV).to receive(:fetch).and_call_original
+                allow(ENV).to receive(:fetch).with("PATH", "").and_return(dir)
+
+                expect(described_class.available?).to be true
+              end
             end
           end
 
-          context "when which returns non-zero" do
-            before do
-              status = instance_double(Process::Status, success?: false)
-              allow(Open3).to receive(:capture3).with("which", "cos-cli")
-                .and_return(["", "", status])
-            end
-
+          context "when cos-cli is not in PATH" do
             it "returns false" do
-              expect(described_class.available?).to be false
+              Dir.mktmpdir do |dir|
+                allow(ENV).to receive(:fetch).and_call_original
+                allow(ENV).to receive(:fetch).with("PATH", "").and_return(dir)
+
+                expect(described_class.available?).to be false
+              end
             end
           end
 
-          context "when which command itself is missing" do
-            before do
-              allow(Open3).to receive(:capture3).with("which", "cos-cli")
-                .and_raise(Errno::ENOENT)
-            end
-
+          context "when PATH entry contains a directory named cos-cli" do
             it "returns false" do
-              expect(described_class.available?).to be false
+              Dir.mktmpdir do |dir|
+                Dir.mkdir(File.join(dir, "cos-cli"))
+                allow(ENV).to receive(:fetch).and_call_original
+                allow(ENV).to receive(:fetch).with("PATH", "").and_return(dir)
+
+                expect(described_class.available?).to be false
+              end
             end
           end
         end

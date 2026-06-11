@@ -15,10 +15,14 @@ module Fusuma
 
         attr_reader :reader, :writer
 
-        # Check if swaymsg command is available
+        # Search PATH in pure Ruby: the external `which` command is not
+        # installed on minimal systems (e.g. Arch containers).
         # @return [Boolean]
         def self.available?
-          system("which swaymsg > /dev/null 2>&1")
+          ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).any? do |dir|
+            path = File.join(dir, "swaymsg")
+            File.executable?(path) && !File.directory?(path)
+          end
         end
 
         def initialize
@@ -106,7 +110,7 @@ module Fusuma
           # Subscribe to sway window events
           def subscribe_window_events
             cmd = ["swaymsg", "-m", "-t", "subscribe", '["window"]']
-            Open3.popen3(*cmd) do |stdin, stdout, stderr, wait_thr|
+            Open3.popen3(*cmd) do |stdin, stdout, stderr, _wait_thr|
               stdin.close
               stdout.each_line do |line|
                 event = JSON.parse(line)
@@ -114,7 +118,9 @@ module Fusuma
               rescue JSON::ParserError => e
                 MultiLogger.warn "Failed to parse sway event: #{e.message}"
               end
-              MultiLogger.error stderr.read if stdout.eof?
+              # A clean swaymsg exit must not stop the watcher silently:
+              # raise so on_active_application_changed resubscribes via retry.
+              raise "swaymsg subscribe exited: #{stderr.read}"
             end
           rescue Errno::ENOENT
             MultiLogger.error "swaymsg command not found. Is sway installed?"

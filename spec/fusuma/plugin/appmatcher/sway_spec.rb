@@ -1,26 +1,50 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "tmpdir"
 
 module Fusuma
   module Plugin
     module Appmatcher
       RSpec.describe Sway do
         describe ".available?" do
-          subject { described_class.available? }
+          # available? searches PATH in pure Ruby (no external `which`,
+          # which is not installed on minimal systems like Arch containers).
+          context "when swaymsg is found in PATH" do
+            it "returns true" do
+              Dir.mktmpdir do |dir|
+                exe = File.join(dir, "swaymsg")
+                File.write(exe, "")
+                File.chmod(0o755, exe)
+                allow(ENV).to receive(:fetch).and_call_original
+                allow(ENV).to receive(:fetch).with("PATH", "").and_return(dir)
 
-          context "when swaymsg command exists" do
-            before do
-              allow(described_class).to receive(:system).with("which swaymsg > /dev/null 2>&1").and_return(true)
+                expect(described_class.available?).to be true
+              end
             end
-            it { is_expected.to be true }
           end
 
-          context "when swaymsg command does not exist" do
-            before do
-              allow(described_class).to receive(:system).with("which swaymsg > /dev/null 2>&1").and_return(false)
+          context "when swaymsg is not in PATH" do
+            it "returns false" do
+              Dir.mktmpdir do |dir|
+                allow(ENV).to receive(:fetch).and_call_original
+                allow(ENV).to receive(:fetch).with("PATH", "").and_return(dir)
+
+                expect(described_class.available?).to be false
+              end
             end
-            it { is_expected.to be false }
+          end
+
+          context "when PATH entry contains a directory named swaymsg" do
+            it "returns false" do
+              Dir.mktmpdir do |dir|
+                Dir.mkdir(File.join(dir, "swaymsg"))
+                allow(ENV).to receive(:fetch).and_call_original
+                allow(ENV).to receive(:fetch).with("PATH", "").and_return(dir)
+
+                expect(described_class.available?).to be false
+              end
+            end
           end
         end
 
@@ -214,6 +238,85 @@ module Fusuma
 
             it "returns the focused app name" do
               expect(subject).to eq "active_app"
+            end
+          end
+
+          describe "#on_active_application_changed" do
+            # Build a sway window event line as emitted by
+            # `swaymsg -m -t subscribe '["window"]'`
+            def focus_event(app_id)
+              {
+                "change" => "focus",
+                "container" => {"app_id" => app_id}
+              }.to_json + "\n"
+            end
+
+            # Stub Open3.popen3 to feed the given lines as swaymsg stdout.
+            def stub_subscribe(lines)
+              stdout = StringIO.new(lines.join)
+              stderr = StringIO.new("")
+              stdin = StringIO.new
+              wait_thr = double("wait_thr")
+              allow(Open3).to receive(:popen3)
+                .with("swaymsg", "-m", "-t", "subscribe", '["window"]')
+                .and_yield(stdin, stdout, stderr, wait_thr)
+              stdin
+            end
+
+            # A clean swaymsg exit raises so on_active_application_changed
+            # resubscribes via its `rescue => e; sleep 1; retry` loop.
+            # The sleep stub raises SystemExit to break out of that infinite
+            # retry loop in tests (SystemExit is not a StandardError, so
+            # `rescue => e` does not catch it).
+            before do
+              allow(Fusuma::MultiLogger).to receive(:error)
+              allow(matcher).to receive(:sleep).and_raise(SystemExit)
+            end
+
+            # Runs the subscription until the stubbed stdout is exhausted
+            # (then the sleep stub raises SystemExit) and returns yielded names.
+            def watch_until_exit
+              yielded = []
+              expect {
+                matcher.on_active_application_changed { |name| yielded << name }
+              }.to raise_error(SystemExit)
+              yielded
+            end
+
+            it "yields app name on focus event" do
+              stub_subscribe([focus_event("firefox")])
+              expect(watch_until_exit).to eq(["firefox"])
+            end
+
+            it "ignores non-focus events" do
+              other = {"change" => "title", "container" => {"app_id" => "kitty"}}.to_json + "\n"
+              stub_subscribe([other, focus_event("alacritty")])
+              expect(watch_until_exit).to eq(["alacritty"])
+            end
+
+            it "skips invalid JSON lines" do
+              allow(Fusuma::MultiLogger).to receive(:warn)
+              stub_subscribe(["not json\n", focus_event("kitty")])
+              expect(watch_until_exit).to eq(["kitty"])
+              expect(Fusuma::MultiLogger).to have_received(:warn).with(/Failed to parse/)
+            end
+
+            it "retries when swaymsg exits cleanly" do
+              # A clean swaymsg exit (stdout EOF, no exception) must not stop
+              # the watcher silently; it raises and enters the retry loop.
+              stub_subscribe([])
+              watch_until_exit
+              expect(Fusuma::MultiLogger).to have_received(:error).with(/swaymsg .*exited/)
+            end
+
+            it "logs and retries when swaymsg is missing" do
+              allow(Open3).to receive(:popen3)
+                .with("swaymsg", "-m", "-t", "subscribe", '["window"]')
+                .and_raise(Errno::ENOENT)
+
+              watch_until_exit
+
+              expect(Fusuma::MultiLogger).to have_received(:error).with(/swaymsg command not found/)
             end
           end
         end

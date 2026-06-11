@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.12.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.12.0) (2026-06-11)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.11.0...v0.12.0)
+
+**Implemented enhancements:**
+
+- feat: add COSMIC Desktop \(Wayland\) backend via cos-cli [\#21](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/21) ([iberianpig](https://github.com/iberianpig))
+
 ## [v0.11.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.11.0) (2026-01-20)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.10.0...v0.11.0)
@@ -20,10 +28,13 @@
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-appmatcher/compare/v0.8.0...v0.9.0)
 
+**Implemented enhancements:**
+
+- feat: add support for GNOME 46 [\#16](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/16) ([ZacCat](https://github.com/ZacCat))
+
 **Merged pull requests:**
 
 - fix: xdg\_current\_desktop value for VS Code terminals [\#17](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/17) ([ZacCat](https://github.com/ZacCat))
-- feat: add support for GNOME 46 [\#16](https://github.com/iberianpig/fusuma-plugin-appmatcher/pull/16) ([ZacCat](https://github.com/ZacCat))
 
 ## [v0.8.0](https://github.com/iberianpig/fusuma-plugin-appmatcher/tree/v0.8.0) (2025-02-18)
 

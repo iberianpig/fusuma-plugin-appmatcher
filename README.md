@@ -3,7 +3,7 @@
 [Fusuma](https://github.com/iberianpig/fusuma) plugin configure app-specific gestures
 
 * Switch gesture mappings by detecting active application.
-* Support X11, GNOME Wayland, Hyprland
+* Support X11, GNOME Wayland, Hyprland, COSMIC
 
 
 ## Installation
@@ -26,6 +26,14 @@ $ fusuma-appmatcher --install-gnome-extension
 ```
 
 Restart your session(logout/login), then activate Appmatcher on gnome-extensions-app
+
+### Install cos-cli for COSMIC Desktop
+
+On POP!_OS COSMIC, fusuma-plugin-appmatcher uses [cos-cli](https://github.com/estin/cos-cli) (a third-party CLI) to read active window state from the cosmic-comp Wayland compositor.
+
+```sh
+$ cargo install --git https://github.com/estin/cos-cli
+```
 
 ## List Running Application names
 
@@ -156,7 +164,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/iberia
 
 ### Help Wanted: Support for Other Wayland Compositors
 
-Currently, this plugin supports X11, GNOME Wayland, and Hyprland. We'd love to expand support to other Wayland compositors (Sway, KDE Plasma, wlroots-based compositors, etc.).
+Currently, this plugin supports X11, GNOME Wayland, Hyprland, and COSMIC. We'd love to expand support to other Wayland compositors (Sway, KDE Plasma, wlroots-based compositors, etc.).
 
 If you're using an unsupported compositor:
 - Please [open an issue](https://github.com/iberianpig/fusuma-plugin-appmatcher/issues) to let us know

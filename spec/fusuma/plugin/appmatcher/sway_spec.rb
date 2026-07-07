@@ -2,6 +2,7 @@
 
 require "spec_helper"
 require "tmpdir"
+require "fusuma/plugin/appmatcher/sway"
 
 module Fusuma
   module Plugin

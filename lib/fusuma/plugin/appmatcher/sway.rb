@@ -59,10 +59,6 @@ module Fusuma
 
         # Look up application name using swaymsg
         class Matcher
-          def initialize
-            @cache = {}
-          end
-
           # @return [Array<String>]
           def running_applications
             tree = fetch_tree

@@ -107,6 +107,23 @@ module Fusuma
               it { is_expected.to eq Appmatcher::UnsupportedBackend }
             end
           end
+
+          context "when XDG_CURRENT_DESKTOP is Niri" do
+            before { allow(Appmatcher).to receive(:xdg_current_desktop).and_return("Niri") }
+
+            context "when niri is available" do
+              before { allow(Appmatcher::Niri).to receive(:available?).and_return(true) }
+              it { is_expected.to eq Appmatcher::Niri }
+            end
+
+            context "when niri is NOT available" do
+              before do
+                allow(Appmatcher::Niri).to receive(:available?).and_return(false)
+                allow(MultiLogger).to receive(:warn)
+              end
+              it { is_expected.to eq Appmatcher::UnsupportedBackend }
+            end
+          end
         end
       end
 

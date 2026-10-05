@@ -3,7 +3,7 @@
 [Fusuma](https://github.com/iberianpig/fusuma) plugin configure app-specific gestures
 
 * Switch gesture mappings by detecting active application.
-* Support X11, GNOME Wayland, Hyprland, COSMIC, Sway
+* Support X11, GNOME Wayland, Hyprland, COSMIC, Sway, Niri
 
 
 ## Installation
@@ -164,7 +164,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/iberia
 
 ### Help Wanted: Support for Other Wayland Compositors
 
-Currently, this plugin supports X11, GNOME Wayland, Hyprland, COSMIC, and Sway. We'd love to expand support to other Wayland compositors (KDE Plasma, other wlroots-based compositors, etc.).
+Currently, this plugin supports X11, GNOME Wayland, Hyprland, COSMIC, Sway, and Niri. We'd love to expand support to other Wayland compositors (KDE Plasma, other wlroots-based compositors, etc.).
 
 If you're using an unsupported compositor:
 - Please [open an issue](https://github.com/iberianpig/fusuma-plugin-appmatcher/issues) to let us know

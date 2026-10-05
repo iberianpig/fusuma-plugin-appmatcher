@@ -8,6 +8,7 @@ require "fusuma/plugin/appmatcher/gnome_extensions/installer"
 require "fusuma/plugin/appmatcher/hyprland"
 require "fusuma/plugin/appmatcher/cosmic"
 require "fusuma/plugin/appmatcher/sway"
+require "fusuma/plugin/appmatcher/niri"
 require "fusuma/plugin/appmatcher/unsupported_backend"
 
 module Fusuma
@@ -51,6 +52,13 @@ module Fusuma
             else
               MultiLogger.warn "swaymsg command not found"
               MultiLogger.warn "Please install sway to use appmatcher with Sway"
+            end
+          when /niri/i
+            if Niri.available?
+              return Niri
+            else
+              MultiLogger.warn "niri command not found"
+              MultiLogger.warn "Please install niri to use appmatcher with Niri"
             end
           end
         end
